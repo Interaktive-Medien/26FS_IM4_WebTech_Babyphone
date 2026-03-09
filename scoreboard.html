@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rangliste</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/design_system.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/nav.css" />
+    <link rel="stylesheet" href="css/scoreboard.css" />
+  </head>
+  <body>
+    <h1>Rangliste</h1>
+    <div class="scoreboard-container">
+      <table class="scoreboard-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Punkte</th>
+            <th class="delete-column"></th>
+          </tr>
+        </thead>
+        <tbody id="scoreboard-body">
+          <!-- Data will be inserted here via JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="friend-section">
+      <div id="addFriendForm" class="friend-form">
+        <h5>Mitglied hinzufügen</h5>
+        <div class="friend-input-group">
+          <label for="friendEmail">Suche nach Name oder E-Mail</label>
+          <div class="friend-input-container">
+            <input type="text" id="friendEmail" placeholder="" />
+            <div
+              id="searchDropdown"
+              class="search-dropdown"
+              style="display: none"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="/profile.html" class="nav-link"> Profil </a>
+
+      <a href="/index.html" class="nav-add-button">
+        <span class="nav-add-symbol">+</span>
+      </a>
+
+      <a href="/scoreboard.html" class="nav-link nav-link-active"> Liste </a>
+    </nav>
+
+    <script src="js/scoreboard.js"></script>
+  </body>
+</html>

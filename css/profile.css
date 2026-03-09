@@ -1,0 +1,57 @@
+.profile-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.profile-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.profile-section {
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.activities-section {
+  padding: 20px;
+}
+
+.activities-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.activities-table th {
+  text-align: left;
+  color: var(--color-neutral-text);
+}
+
+.activities-table td {
+  padding-bottom: 12px;
+  padding-top: 12px;
+}
+
+.score {
+  font-size: var(--type-size-body);
+  color: var(--color-status-success-text);
+  font-weight: var(--type-weight-label);
+}
+
+.logout-btn {
+  padding: 8px 16px;
+  background-color: var(--color-status-error-background);
+  color: var(--color-status-error-text);
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  border: 1px solid var(--color-status-error-border);
+}
+
+.score-container {
+  text-align: right;
+  margin-right: 18px;
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/design_system.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/nav.css" />
+    <link rel="stylesheet" href="css/profile.css" />
+  </head>
+  <body>
+    <div class="profile-container">
+      <div class="profile-header-row">
+        <h1>Profil</h1>
+
+        <div class="score-container">
+          <label for="totalScore">Punkte</label>
+          <div class="" id="totalScore">...</div>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <h5>Persönliche Angaben</h5>
+
+        <div class="">
+          <label for="userName">Name</label>
+          <input type="text" id="userName" class="" value="..." />
+        </div>
+        <button onclick="logout()" class="logout-btn">Logout</button>
+      </div>
+
+      <div class="activities-section">
+        <h5>Letzte 10 Aktivitäten</h5>
+        <table class="activities-table">
+          <thead>
+            <tr>
+              <th>Wann</th>
+              <th>Task</th>
+              <th>Punkte</th>
+            </tr>
+          </thead>
+          <tbody id="activitiesContainer">
+            <!-- Activities will be inserted here via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a href="/profile.html" class="nav-link nav-link-active"> Profil </a>
+
+      <a href="/index.html" class="nav-add-button">
+        <span class="nav-add-symbol">+</span>
+      </a>
+
+      <a href="/scoreboard.html" class="nav-link"> Liste </a>
+    </nav>
+
+    <script src="js/profile.js"></script>
+  </body>
+</html>
