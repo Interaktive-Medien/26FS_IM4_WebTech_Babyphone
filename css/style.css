@@ -159,3 +159,13 @@ td {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Desktop: align h1 with the centered content blocks */
+@media (min-width: 600px) {
+  h1 {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+  }
+}
