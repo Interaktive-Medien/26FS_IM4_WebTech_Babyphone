@@ -1,3 +1,8 @@
+/* Remove body padding on login/register pages so the background fills full height */
+body:has(.login-container) {
+  padding-bottom: 0;
+}
+
 /* Login Container */
 .login-container {
   display: flex;
