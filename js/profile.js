@@ -89,8 +89,57 @@ async function updateName() {
   }
 }
 
+// Check if user has heulhistory entries; show seed button if not
+async function checkHeulhistory() {
+  try {
+    const response = await fetch("api/heulhistory/read.php", {
+      credentials: "include",
+    });
+    const data = await response.json();
+
+    if (Array.isArray(data) && data.length === 0) {
+      document.getElementById("seedSection").style.display = "";
+    }
+  } catch (error) {
+    console.error("Error checking heulhistory:", error);
+  }
+}
+
+// Seed demo heulhistory entries for the current user
+async function seedDatabase() {
+  const btn = document.getElementById("seedBtn");
+  btn.disabled = true;
+  btn.textContent = "Wird erstellt…";
+
+  try {
+    const response = await fetch("api/heulhistory/seed.php", {
+      method: "POST",
+      credentials: "include",
+    });
+    const result = await response.json();
+
+    if (result.error) {
+      alert(result.error);
+      btn.disabled = false;
+      btn.textContent = "Demo-Daten erstellen";
+      return;
+    }
+
+    document.getElementById("seedSection").style.display = "none";
+    alert("Demo-Daten wurden erfolgreich erstellt!");
+  } catch (error) {
+    console.error("Seed failed:", error);
+    alert("Fehler beim Erstellen der Demo-Daten");
+    btn.disabled = false;
+    btn.textContent = "Demo-Daten erstellen";
+  }
+}
+
 // Add event listener for name input
 document.getElementById("userName").addEventListener("change", updateName);
 
 // Load profile when page loads
-document.addEventListener("DOMContentLoaded", loadProfile);
+document.addEventListener("DOMContentLoaded", () => {
+  loadProfile();
+  checkHeulhistory();
+});
