@@ -16,15 +16,12 @@
     <link rel="stylesheet" href="css/profile.css" />
   </head>
   <body>
-    <div class="profile-container">
-      <div class="profile-header-row">
-        <h1>Profil</h1>
+    <a href="profile.html" class="profile-shortcut profile-shortcut-active" aria-label="Profil">
+      <svg class="profile-shortcut-icon" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg> Profil
+    </a>
 
-        <div class="score-container">
-          <label for="totalCries">Heuler gesamt</label>
-          <div class="" id="totalCries">...</div>
-        </div>
-      </div>
+    <div class="profile-container">
+      <h1>Profil</h1>
 
       <div class="profile-section">
         <h5>Persönliche Angaben</h5>
@@ -36,31 +33,11 @@
         <button onclick="logout()" class="logout-btn">Logout</button>
       </div>
 
-      <div class="activities-section">
-        <h5>Letzte 10 Heul-Eintraege</h5>
-        <table class="activities-table">
-          <thead>
-            <tr>
-              <th>Wann</th>
-              <th>Bis</th>
-              <th>Dauer (min)</th>
-            </tr>
-          </thead>
-          <tbody id="activitiesContainer">
-            <!-- Activities will be inserted here via JavaScript -->
-          </tbody>
-        </table>
-      </div>
     </div>
 
     <nav class="nav">
-      <a href="profile.html" class="nav-link nav-link-active"> Profil </a>
-
-      <a href="index.html" class="nav-add-button">
-        <span class="nav-add-symbol">+</span>
-      </a>
-
-      <a href="settings.html" class="nav-link"> Settings </a>
+      <a href="index.html" class="nav-link"> Heulhistorie </a>
+      <a href="settings.html" class="nav-link"> Playlist </a>
     </nav>
 
     <script src="js/profile.js"></script>

@@ -1,6 +1,6 @@
 .nav {
   width: 80%;
-  max-width: 1200px;
+  max-width: 720px;
   height: 72px;
   padding: 4px 8px;
   display: flex;
@@ -27,7 +27,7 @@
   align-items: center;
   justify-content: center;
   background: var(--color-neutral-white);
-  border-radius: 16px;
+  border-radius: 0;
   box-shadow: 0px 2px 0px #83bade;
 }
 
@@ -39,30 +39,37 @@
   border-radius: 0 16px 16px 0;
 }
 
-.nav-add-button {
-  width: 80px;
-  height: 80px;
-  padding: 16px;
-  background: var(--color-primary-default);
-  box-shadow: 0px 2px 0px #803615;
-  border-radius: 0;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 16px;
-  text-decoration: none;
-}
-
-.nav-add-symbol {
-  color: white;
-  font-size: 40px;
-  font-family: var(--type-family-heading);
-  font-weight: 500;
-  line-height: 48px;
-}
-
 .nav-link-active {
+  color: var(--color-primary-default);
+}
+
+.profile-shortcut {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 16px;
+  background: white;
+  color: var(--color-neutral-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  font-family: var(--type-family-body);
+  font-weight: 500;
+  box-shadow: 0px 2px 0px #83bade;
+  z-index: 1000;
+}
+
+.profile-shortcut-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.profile-shortcut-active {
   color: var(--color-primary-default);
 }
