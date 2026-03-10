@@ -63,11 +63,12 @@ async function loadHeulhistory() {
     tbody.innerHTML = ""; // Clear existing rows
 
     if (history.length === 0) {
-      const row = document.createElement("tr");
-      row.innerHTML = '<td colspan="3">Keine Eintraege vorhanden.</td>';
-      tbody.appendChild(row);
+      document.getElementById("emptyState").style.display = "";
+      renderChart([]);
       return;
     }
+
+    document.getElementById("emptyState").style.display = "none";
 
     history.forEach((entry) => {
       const row = document.createElement("tr");
@@ -105,8 +106,13 @@ function renderChart(history) {
     return yA - yB || mA - mB || dA - dB;
   });
 
-  const labels = sorted.map((e) => e[0]);
-  const data = sorted.map((e) => e[1]);
+  // When empty, show placeholder day labels so axes are still visible
+  const labels = sorted.length > 0
+    ? sorted.map((e) => e[0])
+    : ["Heute"];
+  const data = sorted.length > 0
+    ? sorted.map((e) => e[1])
+    : [0];
 
   const ctx = document.getElementById("heulchart").getContext("2d");
 
@@ -131,6 +137,7 @@ function renderChart(history) {
       scales: {
         y: {
           beginAtZero: true,
+          suggestedMax: 20,
           title: { display: true, text: "Minuten" },
         },
         x: {
@@ -139,6 +146,36 @@ function renderChart(history) {
       },
     },
   });
+}
+
+// Seed demo heulhistory entries for the current user
+async function seedDatabase() {
+  const btn = document.getElementById("seedBtn");
+  btn.disabled = true;
+  btn.textContent = "Wird erstellt…";
+
+  try {
+    const response = await fetch("api/heulhistory/seed.php", {
+      method: "POST",
+      credentials: "include",
+    });
+    const result = await response.json();
+
+    if (result.error) {
+      alert(result.error);
+      btn.disabled = false;
+      btn.textContent = "Demo-Daten erstellen";
+      return;
+    }
+
+    // Reload the page to show the new data
+    window.location.reload();
+  } catch (error) {
+    console.error("Seed failed:", error);
+    alert("Fehler beim Erstellen der Demo-Daten");
+    btn.disabled = false;
+    btn.textContent = "Demo-Daten erstellen";
+  }
 }
 
 // Load history when page loads

@@ -41,6 +41,12 @@
       </table>
     </div>
 
+    <!-- Shown only when user has no heulhistory entries -->
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <p>Keine Eintraege vorhanden. Verbinde ein Babyphone oder fülle die Datenbank mit Demo-Einträgen.</p>
+      <button id="seedBtn" onclick="seedDatabase()" class="seed-btn-small">Demo-Daten erstellen</button>
+    </div>
+
     <nav class="nav">
       <a href="index.html" class="nav-link nav-link-active"> Heulhistorie </a>
       <a href="settings.html" class="nav-link"> Playlist </a>
