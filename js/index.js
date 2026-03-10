@@ -65,6 +65,7 @@ async function loadHeulhistory() {
     if (history.length === 0) {
       document.getElementById("emptyState").style.display = "";
       renderChart([]);
+      renderTimeChart([]);
       return;
     }
 
@@ -81,6 +82,7 @@ async function loadHeulhistory() {
     });
 
     renderChart(history);
+    renderTimeChart(history);
   } catch (error) {
     console.error("Error loading heulhistory:", error);
   }
@@ -133,6 +135,11 @@ function renderChart(history) {
       responsive: true,
       plugins: {
         legend: { display: false },
+        title: {
+          display: true,
+          text: "Heulzeit nach Tag",
+          font: { size: 16 },
+        },
       },
       scales: {
         y: {
@@ -142,6 +149,58 @@ function renderChart(history) {
         },
         x: {
           title: { display: true, text: "Tag" },
+        },
+      },
+    },
+  });
+}
+
+function renderTimeChart(history) {
+  // Count how many crying events started in each hour of the day (0–23)
+  const countPerHour = new Array(24).fill(0);
+
+  history.forEach((entry) => {
+    const hour = new Date(entry.starttime).getHours();
+    countPerHour[hour]++;
+  });
+
+  const labels = countPerHour.map((_, h) =>
+    `${String(h).padStart(2, "0")}:00`
+  );
+
+  const ctx = document.getElementById("heulchart-time").getContext("2d");
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Anzahl Heulen",
+          data: countPerHour,
+          backgroundColor: "#ff6724",
+          borderRadius: 6,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: "Heulen nach Uhrzeit",
+          font: { size: 16 },
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { stepSize: 1 },
+          title: { display: true, text: "Anzahl" },
+        },
+        x: {
+          title: { display: true, text: "Uhrzeit" },
         },
       },
     },
