@@ -34,6 +34,12 @@ function formatDate(dateString) {
   ).padStart(2, "0")}`;
 }
 
+function formatDurationMinutes(startTime, endTime) {
+  const start = new Date(startTime).getTime();
+  const end = new Date(endTime).getTime();
+  return Math.max(0, Math.round((end - start) / 60000));
+}
+
 // Load profile data
 async function loadProfile() {
   const isAuthorized = await checkAuth();
@@ -50,7 +56,7 @@ async function loadProfile() {
 
     // Update user info
     document.getElementById("userName").value = data.user.name;
-    document.getElementById("totalScore").textContent = data.user.total_score;
+    document.getElementById("totalCries").textContent = data.user.total_cries;
 
     // Update activities
     const container = document.getElementById("activitiesContainer");
@@ -59,9 +65,12 @@ async function loadProfile() {
     data.activities.forEach((activity) => {
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${formatDate(activity.timestamp)}</td>
-        <td>${activity.emoji} ${activity.name}</td>
-        <td class="score">+${activity.score}</td>
+        <td>${formatDate(activity.starttime)}</td>
+        <td>${formatDate(activity.endtime)}</td>
+        <td class="score">${formatDurationMinutes(
+          activity.starttime,
+          activity.endtime
+        )}</td>
       `;
       container.appendChild(row);
     });

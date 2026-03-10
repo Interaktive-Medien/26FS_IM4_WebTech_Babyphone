@@ -20,25 +20,22 @@ try {
         exit();
     }
 
-    // Then get total score
-    $scoreQuery = "SELECT COALESCE(SUM(t.score), 0) as total_score
-                   FROM users u
-                   LEFT JOIN user_has_task uht ON u.id = uht.user_id
-                   LEFT JOIN tasks t ON uht.task_id = t.id
-                   WHERE u.id = ?";
+    // Then get total cries
+    $scoreQuery = "SELECT COUNT(*) as total_cries
+                   FROM heulhistory
+                   WHERE user_id = ?";
     
     $stmt = $pdo->prepare($scoreQuery);
     $stmt->execute([$_SESSION['user_id']]);
     $scoreInfo = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $userInfo['total_score'] = $scoreInfo['total_score'];
+    $userInfo['total_cries'] = (int)$scoreInfo['total_cries'];
 
-    // Finally get activities - changed created_at to timestamp
-    $activitiesQuery = "SELECT t.name, t.score, t.emoji, uht.timestamp
-                       FROM user_has_task uht
-                       JOIN tasks t ON uht.task_id = t.id
-                       WHERE uht.user_id = ?
-                       ORDER BY uht.timestamp DESC
+    // Finally get latest crying events
+    $activitiesQuery = "SELECT starttime, endtime
+                       FROM heulhistory
+                       WHERE user_id = ?
+                       ORDER BY starttime DESC
                        LIMIT 10";
     
     $stmt = $pdo->prepare($activitiesQuery);

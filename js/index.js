@@ -28,103 +28,60 @@ async function checkAuth() {
   }
 }
 
-// Function to load and display all tasks
-async function loadTasks() {
+function formatDateTime(dateString) {
+  const date = new Date(dateString);
+  return `${date.getDate()}.${date.getMonth() + 1}.${String(
+    date.getFullYear()
+  ).slice(2)} ${String(date.getHours()).padStart(2, "0")}:${String(
+    date.getMinutes()
+  ).padStart(2, "0")}`;
+}
+
+function formatDurationMinutes(startTime, endTime) {
+  const start = new Date(startTime).getTime();
+  const end = new Date(endTime).getTime();
+  const minutes = Math.max(0, Math.round((end - start) / 60000));
+  return minutes;
+}
+
+// Function to load and display all crying events
+async function loadHeulhistory() {
   // First check authorization
   const isAuthorized = await checkAuth();
   if (!isAuthorized) return;
 
   try {
-    const response = await fetch("api/tasks/read.php");
-    const tasks = await response.json();
+    const response = await fetch("api/heulhistory/read.php");
+    const history = await response.json();
 
-    if (!tasks || tasks.error) {
-      console.error("Error loading tasks:", tasks.error);
+    if (!history || history.error) {
+      console.error("Error loading heulhistory:", history.error);
       return;
     }
 
-    const container = document.getElementById("tasks-container");
-    container.innerHTML = ""; // Clear existing tasks
+    const tbody = document.getElementById("heulhistory-body");
+    tbody.innerHTML = ""; // Clear existing rows
 
-    // Group tasks by category
-    const tasksByCategory = tasks.reduce((acc, task) => {
-      if (!acc[task.category]) {
-        acc[task.category] = [];
-      }
-      acc[task.category].push(task);
-      return acc;
-    }, {});
-
-    // Create sections for each category
-    Object.entries(tasksByCategory).forEach(([category, categoryTasks]) => {
-      // Create category section
-      const categorySection = document.createElement("div");
-      categorySection.className = "category-section";
-
-      // Add category header
-      const categoryHeader = document.createElement("h2");
-      categoryHeader.className = "category-header";
-      categoryHeader.textContent = category;
-      categorySection.appendChild(categoryHeader);
-
-      // Add tasks for this category
-      const tasksContainer = document.createElement("div");
-      tasksContainer.className = "tasks-grid";
-
-      categoryTasks.forEach((task) => {
-        const button = document.createElement("button");
-        button.className = "task-button";
-        button.innerHTML = `
-          <span class="emoji">${task.emoji}</span>
-          <span class="task-name">${task.name}</span>
-          <span class="task-score">${task.score}</span>
-        `;
-        button.onclick = () => completeTask(task.id);
-        tasksContainer.appendChild(button);
-      });
-
-      categorySection.appendChild(tasksContainer);
-      container.appendChild(categorySection);
-    });
-  } catch (error) {
-    console.error("Error loading tasks:", error);
-  }
-}
-
-// Function to complete a task
-async function completeTask(taskId) {
-  try {
-    const response = await fetch("api/tasks/complete.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        task_id: taskId,
-      }),
-    });
-
-    const result = await response.json();
-
-    if (result.error) {
-      alert(result.error);
+    if (history.length === 0) {
+      const row = document.createElement("tr");
+      row.innerHTML = '<td colspan="3">Keine Eintraege vorhanden.</td>';
+      tbody.appendChild(row);
       return;
     }
 
-    if (result.message) {
-      // Fire confetti
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-      });
-      loadTasks();
-    }
+    history.forEach((entry) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${formatDateTime(entry.starttime)}</td>
+        <td>${formatDateTime(entry.endtime)}</td>
+        <td>${formatDurationMinutes(entry.starttime, entry.endtime)}</td>
+      `;
+      tbody.appendChild(row);
+    });
   } catch (error) {
-    console.error("Error completing task:", error);
-    alert("Error completing task. Please try again.");
+    console.error("Error loading heulhistory:", error);
   }
 }
 
-// Load tasks when page loads
-document.addEventListener("DOMContentLoaded", loadTasks);
+// Load history when page loads
+document.addEventListener("DOMContentLoaded", loadHeulhistory);

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Heulradar</title>
+    <title>Settings</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -16,18 +16,16 @@
     <link rel="stylesheet" href="css/scoreboard.css" />
   </head>
   <body>
-    <h1>Heulhistorie</h1>
-
+    <h1>Settings</h1>
     <div class="scoreboard-container">
       <table class="scoreboard-table">
         <thead>
           <tr>
-            <th>Start</th>
-            <th>Ende</th>
-            <th>Dauer (min)</th>
+            <th>Track</th>
+            <th>Ausgewaehlt</th>
           </tr>
         </thead>
-        <tbody id="heulhistory-body">
+        <tbody id="tracks-body">
           <!-- Data will be inserted here via JavaScript -->
         </tbody>
       </table>
@@ -40,9 +38,9 @@
         <span class="nav-add-symbol">+</span>
       </a>
 
-      <a href="settings.html" class="nav-link"> Settings </a>
+      <a href="settings.html" class="nav-link nav-link-active"> Settings </a>
     </nav>
 
-    <script src="js/index.js"></script>
+    <script src="js/settings.js"></script>
   </body>
 </html>
