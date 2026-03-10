@@ -67,7 +67,7 @@ body:has(.login-container) {
   margin-top: var(--spacing-s);
 }
 
-/* Desktop: constrain form width */
+/* Desktop: constrain form and container width */
 @media (min-width: 600px) {
   .login-form {
     max-width: 600px;
