@@ -78,9 +78,67 @@ async function loadHeulhistory() {
       `;
       tbody.appendChild(row);
     });
+
+    renderChart(history);
   } catch (error) {
     console.error("Error loading heulhistory:", error);
   }
+}
+
+function renderChart(history) {
+  // Aggregate total crying minutes per day
+  const minutesPerDay = {};
+
+  history.forEach((entry) => {
+    const date = new Date(entry.starttime);
+    const dayKey = `${date.getDate()}.${date.getMonth() + 1}.${String(
+      date.getFullYear()
+    ).slice(2)}`;
+    const mins = formatDurationMinutes(entry.starttime, entry.endtime);
+    minutesPerDay[dayKey] = (minutesPerDay[dayKey] || 0) + mins;
+  });
+
+  // Sort by date (oldest first)
+  const sorted = Object.entries(minutesPerDay).sort((a, b) => {
+    const [dA, mA, yA] = a[0].split(".").map(Number);
+    const [dB, mB, yB] = b[0].split(".").map(Number);
+    return yA - yB || mA - mB || dA - dB;
+  });
+
+  const labels = sorted.map((e) => e[0]);
+  const data = sorted.map((e) => e[1]);
+
+  const ctx = document.getElementById("heulchart").getContext("2d");
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Heulzeit (min)",
+          data: data,
+          backgroundColor: "#83bade",
+          borderRadius: 6,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: "Minuten" },
+        },
+        x: {
+          title: { display: true, text: "Tag" },
+        },
+      },
+    },
+  });
 }
 
 // Load history when page loads

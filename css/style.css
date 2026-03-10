@@ -91,63 +91,8 @@ td {
   color: var(--color-neutral-text);
 }
 
-.category-section {
-  margin: none;
-}
-
-.category-header {
-  font-size: 2rem;
-  color: var(--color-neutral-text);
-  font-weight: bold;
-}
-
-.tasks-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-m);
-  padding: var(--spacing-m);
-  max-width: 1200px;
+.chart-container {
+  max-width: 600px;
   margin: 0 auto;
-}
-
-.task-button {
-  aspect-ratio: 1;
-  padding: var(--spacing-s);
-  border: none;
-  border-radius: 16px;
-  background-color: #2a353d;
-  color: white;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  min-width: 50px;
-  max-width: 200px;
-  margin: 0 auto;
-}
-
-.task-button:hover {
-  transform: translateY(-4px);
-}
-
-.task-button .emoji {
-  font-size: 2.5rem;
-  margin-bottom: var(--spacing-xs);
-}
-
-.task-button .task-name {
-  font-size: 0.8rem;
-  font-weight: bold;
-  margin: var(--spacing-xs) 0;
-  padding: 0 var(--spacing-xs);
-}
-
-.task-score {
-  font-size: 1rem;
-  font-weight: bold;
+  padding: 20px;
 }
