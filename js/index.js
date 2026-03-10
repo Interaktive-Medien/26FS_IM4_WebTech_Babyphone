@@ -1,14 +1,14 @@
 // First check if user is authorized
 async function checkAuth() {
   try {
-    const response = await fetch("/api/auth/auth.php", {
+    const response = await fetch("api/auth/auth.php", {
       credentials: "include",
     });
     // ^ IMPORTANT if you need cookies
 
     // If server returns 401:
     if (response.status === 401) {
-      window.location.href = "/login.html";
+      window.location.href = "login.html";
       return false;
     }
 
@@ -17,13 +17,13 @@ async function checkAuth() {
 
     // Possibly check if result has an error:
     if (result.error || !result.email) {
-      window.location.href = "/login.html";
+      window.location.href = "login.html";
       return false;
     }
     return true;
   } catch (error) {
     console.error("Auth check failed:", error);
-    window.location.href = "/login.html";
+    window.location.href = "login.html";
     return false;
   }
 }
@@ -35,7 +35,7 @@ async function loadTasks() {
   if (!isAuthorized) return;
 
   try {
-    const response = await fetch("/api/tasks/read.php");
+    const response = await fetch("api/tasks/read.php");
     const tasks = await response.json();
 
     if (!tasks || tasks.error) {
@@ -94,7 +94,7 @@ async function loadTasks() {
 // Function to complete a task
 async function completeTask(taskId) {
   try {
-    const response = await fetch("/api/tasks/complete.php", {
+    const response = await fetch("api/tasks/complete.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

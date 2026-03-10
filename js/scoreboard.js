@@ -1,25 +1,25 @@
 // First check if user is authorized
 async function checkAuth() {
   try {
-    const response = await fetch("/api/auth/auth.php", {
+    const response = await fetch("api/auth/auth.php", {
       credentials: "include",
     });
 
     if (response.status === 401) {
-      window.location.href = "/login.html";
+      window.location.href = "login.html";
       return false;
     }
 
     const result = await response.json();
 
     if (result.error || !result.email) {
-      window.location.href = "/login.html";
+      window.location.href = "login.html";
       return false;
     }
     return true;
   } catch (error) {
     console.error("Auth check failed:", error);
-    window.location.href = "/login.html";
+    window.location.href = "login.html";
     return false;
   }
 }
@@ -30,7 +30,7 @@ async function loadScoreboard() {
   if (!isAuthorized) return;
 
   try {
-    const response = await fetch("/api/scoreboard/read.php");
+    const response = await fetch("api/scoreboard/read.php");
     const scores = await response.json();
 
     if (!scores || scores.error) {
@@ -87,7 +87,7 @@ document.getElementById("friendEmail").addEventListener("input", function (e) {
   searchTimeout = setTimeout(async () => {
     try {
       const response = await fetch(
-        `/api/scoreboard/search_users.php?search=${encodeURIComponent(
+        `api/scoreboard/search_users.php?search=${encodeURIComponent(
           searchTerm
         )}`
       );
@@ -130,7 +130,7 @@ async function addFriend(friendEmail) {
   if (!friendEmail) return;
 
   try {
-    const response = await fetch("/api/scoreboard/add_friend.php", {
+    const response = await fetch("api/scoreboard/add_friend.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -163,7 +163,7 @@ async function deleteFriend(friendEmail, buttonElement) {
   }
 
   try {
-    const response = await fetch("/api/scoreboard/delete_friend.php", {
+    const response = await fetch("api/scoreboard/delete_friend.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
