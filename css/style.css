@@ -74,6 +74,35 @@ input {
   border: 1px solid var(--color-neutral-line);
 }
 
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid var(--color-neutral-line);
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  position: relative;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--color-primary-default);
+  border-color: var(--color-primary-default);
+}
+
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
 label {
   display: block;
   font-family: var(--type-family-body);

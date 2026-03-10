@@ -118,7 +118,7 @@ function renderChart(history) {
         {
           label: "Heulzeit (min)",
           data: data,
-          backgroundColor: "#83bade",
+          backgroundColor: "#ff6724",
           borderRadius: 6,
         },
       ],
