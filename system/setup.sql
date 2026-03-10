@@ -49,17 +49,12 @@ SELECT * FROM (
 ) AS `seed`
 WHERE NOT EXISTS (SELECT 1 FROM `tracks`);
 
--- Seed heulhistory once (safe on reruns)
--- Note: Uses the first existing user. If no user exists yet, no rows are inserted.
+-- Seed heulhistory for every user who has no entries yet (safe on reruns)
+-- If a user already has heulhistory rows they are skipped.
 INSERT INTO `heulhistory` (`user_id`, `starttime`, `endtime`)
 SELECT `u`.`id`, `seed`.`starttime`, `seed`.`endtime`
-FROM (
-  SELECT `id`
-  FROM `users`
-  ORDER BY `id`
-  LIMIT 1
-) AS `u`
-JOIN (
+FROM `users` AS `u`
+CROSS JOIN (
   SELECT NOW() - INTERVAL 3 DAY + INTERVAL 2 HOUR AS `starttime`,
          NOW() - INTERVAL 3 DAY + INTERVAL 2 HOUR + INTERVAL 12 MINUTE AS `endtime`
   UNION ALL
@@ -69,4 +64,6 @@ JOIN (
   SELECT NOW() - INTERVAL 1 DAY + INTERVAL 1 HOUR,
          NOW() - INTERVAL 1 DAY + INTERVAL 1 HOUR + INTERVAL 18 MINUTE
 ) AS `seed`
-WHERE NOT EXISTS (SELECT 1 FROM `heulhistory`);
+WHERE NOT EXISTS (
+  SELECT 1 FROM `heulhistory` AS `h` WHERE `h`.`user_id` = `u`.`id`
+);
