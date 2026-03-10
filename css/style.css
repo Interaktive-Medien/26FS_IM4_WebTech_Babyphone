@@ -13,6 +13,7 @@ body {
   width: 100vw;
   overflow-x: hidden;
   font-family: var(--type-family-body);
+  padding-bottom: 130px;
 }
 
 h1 {

@@ -18,9 +18,20 @@ if (!isset($data->track_id) || !isset($data->selected)) {
 }
 
 try {
-    $query = "UPDATE tracks SET selected = ? WHERE id = ?";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([(int)!!$data->selected, (int)$data->track_id]);
+    $userId  = $_SESSION['user_id'];
+    $trackId = (int)$data->track_id;
+
+    if ($data->selected) {
+        // Add selection (IGNORE avoids duplicate-key errors)
+        $query = "INSERT IGNORE INTO user_tracks (user_id, track_id) VALUES (?, ?)";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$userId, $trackId]);
+    } else {
+        // Remove selection
+        $query = "DELETE FROM user_tracks WHERE user_id = ? AND track_id = ?";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$userId, $trackId]);
+    }
 
     echo json_encode(['success' => true, 'message' => 'Track setting updated']);
 } catch (PDOException $e) {

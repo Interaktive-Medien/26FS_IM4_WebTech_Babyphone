@@ -12,8 +12,18 @@ CREATE TABLE IF NOT EXISTS `users` (
 CREATE TABLE IF NOT EXISTS `tracks` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) NOT NULL,
-  `selected` INT NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Junction table: which user has selected which tracks (many-to-many)
+CREATE TABLE IF NOT EXISTS `user_tracks` (
+  `user_id` INT NOT NULL,
+  `track_id` INT NOT NULL,
+  PRIMARY KEY (`user_id`, `track_id`),
+  CONSTRAINT `fk_user_tracks_user`
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_user_tracks_track`
+    FOREIGN KEY (`track_id`) REFERENCES `tracks` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Babyphone crying history linked to a user
@@ -29,41 +39,32 @@ CREATE TABLE IF NOT EXISTS `heulhistory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Seed tracks once (safe on reruns)
-INSERT INTO `tracks` (`title`, `selected`)
+INSERT INTO `tracks` (`title`)
 SELECT * FROM (
-  SELECT 'Another brick in the wall', 1 UNION ALL
-  SELECT 'Back in black', 1 UNION ALL
-  SELECT 'Bohemian rhapsody', 1 UNION ALL
-  SELECT 'Clocks', 1 UNION ALL
-  SELECT 'Creep', 1 UNION ALL
-  SELECT 'Don`t fear the reaper', 1 UNION ALL
-  SELECT 'Enter sandman', 1 UNION ALL
-  SELECT 'Hotel california', 1 UNION ALL
-  SELECT 'I love rock`n`roll', 1 UNION ALL
-  SELECT 'Smells like teen spirit', 1 UNION ALL
-  SELECT 'Stairway to heaven', 1 UNION ALL
-  SELECT 'Sympathy for the devil', 1 UNION ALL
-  SELECT 'Under the bridge', 1 UNION ALL
-  SELECT 'Where is my mind', 1 UNION ALL
-  SELECT 'Wonderwall', 1
+  SELECT 'Another brick in the wall' UNION ALL
+  SELECT 'Back in black' UNION ALL
+  SELECT 'Bohemian rhapsody' UNION ALL
+  SELECT 'Clocks' UNION ALL
+  SELECT 'Creep' UNION ALL
+  SELECT 'Don`t fear the reaper' UNION ALL
+  SELECT 'Enter sandman' UNION ALL
+  SELECT 'Hotel california' UNION ALL
+  SELECT 'I love rock`n`roll' UNION ALL
+  SELECT 'Smells like teen spirit' UNION ALL
+  SELECT 'Stairway to heaven' UNION ALL
+  SELECT 'Sympathy for the devil' UNION ALL
+  SELECT 'Under the bridge' UNION ALL
+  SELECT 'Where is my mind' UNION ALL
+  SELECT 'Wonderwall'
 ) AS `seed`
 WHERE NOT EXISTS (SELECT 1 FROM `tracks`);
 
--- Seed heulhistory for every user who has no entries yet (safe on reruns)
--- If a user already has heulhistory rows they are skipped.
-INSERT INTO `heulhistory` (`user_id`, `starttime`, `endtime`)
-SELECT `u`.`id`, `seed`.`starttime`, `seed`.`endtime`
+-- Seed user_tracks: every user selects all tracks by default (safe on reruns)
+INSERT INTO `user_tracks` (`user_id`, `track_id`)
+SELECT `u`.`id`, `t`.`id`
 FROM `users` AS `u`
-CROSS JOIN (
-  SELECT NOW() - INTERVAL 3 DAY + INTERVAL 2 HOUR AS `starttime`,
-         NOW() - INTERVAL 3 DAY + INTERVAL 2 HOUR + INTERVAL 12 MINUTE AS `endtime`
-  UNION ALL
-  SELECT NOW() - INTERVAL 2 DAY + INTERVAL 9 HOUR,
-         NOW() - INTERVAL 2 DAY + INTERVAL 9 HOUR + INTERVAL 7 MINUTE
-  UNION ALL
-  SELECT NOW() - INTERVAL 1 DAY + INTERVAL 1 HOUR,
-         NOW() - INTERVAL 1 DAY + INTERVAL 1 HOUR + INTERVAL 18 MINUTE
-) AS `seed`
+CROSS JOIN `tracks` AS `t`
 WHERE NOT EXISTS (
-  SELECT 1 FROM `heulhistory` AS `h` WHERE `h`.`user_id` = `u`.`id`
+  SELECT 1 FROM `user_tracks` AS `ut`
+  WHERE `ut`.`user_id` = `u`.`id` AND `ut`.`track_id` = `t`.`id`
 );
