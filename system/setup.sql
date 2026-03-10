@@ -48,3 +48,25 @@ SELECT * FROM (
   SELECT 'Wonderwall', 1
 ) AS `seed`
 WHERE NOT EXISTS (SELECT 1 FROM `tracks`);
+
+-- Seed heulhistory once (safe on reruns)
+-- Note: Uses the first existing user. If no user exists yet, no rows are inserted.
+INSERT INTO `heulhistory` (`user_id`, `starttime`, `endtime`)
+SELECT `u`.`id`, `seed`.`starttime`, `seed`.`endtime`
+FROM (
+  SELECT `id`
+  FROM `users`
+  ORDER BY `id`
+  LIMIT 1
+) AS `u`
+JOIN (
+  SELECT NOW() - INTERVAL 3 DAY + INTERVAL 2 HOUR AS `starttime`,
+         NOW() - INTERVAL 3 DAY + INTERVAL 2 HOUR + INTERVAL 12 MINUTE AS `endtime`
+  UNION ALL
+  SELECT NOW() - INTERVAL 2 DAY + INTERVAL 9 HOUR,
+         NOW() - INTERVAL 2 DAY + INTERVAL 9 HOUR + INTERVAL 7 MINUTE
+  UNION ALL
+  SELECT NOW() - INTERVAL 1 DAY + INTERVAL 1 HOUR,
+         NOW() - INTERVAL 1 DAY + INTERVAL 1 HOUR + INTERVAL 18 MINUTE
+) AS `seed`
+WHERE NOT EXISTS (SELECT 1 FROM `heulhistory`);
