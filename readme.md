@@ -9,7 +9,7 @@ Die App dient gleichzeitig als **Lernprojekt**, um die folgenden Konzepte zu ver
 
 - Wie **Authentication** (Login / Registrierung / Session) funktioniert
 - Warum man **Frontend und Backend trennt** (API-basierter Ansatz)
-- Wie ein **REST-ähnliches API** mit PHP aufgebaut wird
+- Wie eine **REST-ähnliche API** mit PHP aufgebaut wird
 
 ---
 
@@ -109,8 +109,8 @@ tracks.forEach((track) => {
 | Vorteil                 | Erklärung                                                                                |
 | ----------------------- | ---------------------------------------------------------------------------------------- |
 | **Klare Trennung**      | Frontend kümmert sich um Darstellung, Backend um Daten & Logik                           |
-| **Wiederverwendbar**    | Das gleiche API könnte von einer Mobile-App, einem anderen Frontend, etc. genutzt werden |
-| **Einfacher zu testen** | Man kann das API unabhängig vom Frontend testen (z.B. mit Postman)                       |
+| **Wiederverwendbar**    | Die gleiche API könnte von einer Mobile-App, einem anderen Frontend, etc. genutzt werden |
+| **Einfacher zu testen** | Man kann die API unabhängig vom Frontend testen (z.B. mit Postman)                       |
 | **Paralleles Arbeiten** | Ein Team arbeitet am Frontend, ein anderes am Backend                                    |
 | **Industrie-Standard**  | So arbeiten professionelle Teams heute                                                   |
 
@@ -597,7 +597,7 @@ async function loadPage() {
   const isAuthorized = await checkAuth();
   if (!isAuthorized) return; // → Redirect zu login.html
 
-  // 2. Daten vom API laden
+  // 2. Daten von der API laden
   const response = await fetch("api/..../read.php");
   const data = await response.json();
 
