@@ -40,8 +40,88 @@ async function loadProfile() {
     // Update user info
     document.getElementById("userName").value = data.user.name;
 
+    // Render connected devices
+    renderDevices(data.devices || []);
   } catch (error) {
     console.error("Error loading profile:", error);
+  }
+}
+
+// Render connected devices in the device status area
+function renderDevices(devices) {
+  const statusEl = document.getElementById("deviceStatus");
+
+  if (devices.length === 0) {
+    statusEl.innerHTML =
+      '<span class="device-badge device-badge-none">Kein Gerät verbunden</span>';
+    return;
+  }
+
+  statusEl.innerHTML = devices
+    .map(
+      (d) =>
+        `<div class="device-badge">
+          Gerät: ${d.device_code}
+          <button class="disconnect-btn" onclick="disconnectDevice(${d.id})" title="Trennen">&times;</button>
+        </div>`
+    )
+    .join("");
+}
+
+// Connect a device by code
+async function connectDevice() {
+  const input = document.getElementById("deviceCode");
+  const code = input.value.trim();
+
+  if (!code) {
+    alert("Bitte einen Geräte-Code eingeben");
+    return;
+  }
+
+  try {
+    const response = await fetch("api/device/connect.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ device_code: code }),
+    });
+
+    const result = await response.json();
+
+    if (result.error) {
+      alert(result.error);
+      return;
+    }
+
+    input.value = "";
+    loadProfile();
+  } catch (error) {
+    console.error("Error connecting device:", error);
+    alert("Fehler beim Verbinden des Geräts");
+  }
+}
+
+// Disconnect a device
+async function disconnectDevice(deviceId) {
+  if (!confirm("Gerät wirklich trennen?")) return;
+
+  try {
+    const response = await fetch("api/device/disconnect.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ device_id: deviceId }),
+    });
+
+    const result = await response.json();
+
+    if (result.error) {
+      alert(result.error);
+      return;
+    }
+
+    loadProfile();
+  } catch (error) {
+    console.error("Error disconnecting device:", error);
+    alert("Fehler beim Trennen des Geräts");
   }
 }
 

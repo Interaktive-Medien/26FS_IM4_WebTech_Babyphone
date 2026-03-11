@@ -33,6 +33,23 @@
         <button onclick="logout()" class="logout-btn">Logout</button>
       </div>
 
+      <!-- Device connection section -->
+      <div class="profile-section">
+        <h5>Gerät verbinden</h5>
+
+        <div id="deviceStatus" class="device-status">
+          <!-- Filled by JS -->
+        </div>
+
+        <div id="connectForm" class="device-connect-form">
+          <label for="deviceCode">Geräte-Code</label>
+          <div class="device-input-row">
+            <input type="text" id="deviceCode" placeholder="z.B. 1234" />
+            <button onclick="connectDevice()" class="connect-btn">Verbinden</button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <nav class="nav">

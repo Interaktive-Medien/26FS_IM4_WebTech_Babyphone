@@ -21,16 +21,28 @@ try {
     $userId  = $_SESSION['user_id'];
     $trackId = (int)$data->track_id;
 
+    // Get the user's first connected device
+    $deviceStmt = $pdo->prepare("SELECT device_id FROM user_has_device WHERE user_id = ? LIMIT 1");
+    $deviceStmt->execute([$userId]);
+    $deviceRow = $deviceStmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$deviceRow) {
+        echo json_encode(['error' => 'No device connected. Please connect a device first.']);
+        exit();
+    }
+
+    $deviceId = $deviceRow['device_id'];
+
     if ($data->selected) {
         // Add selection (IGNORE avoids duplicate-key errors)
-        $query = "INSERT IGNORE INTO user_tracks (user_id, track_id) VALUES (?, ?)";
+        $query = "INSERT IGNORE INTO device_tracks (device_id, track_id) VALUES (?, ?)";
         $stmt = $pdo->prepare($query);
-        $stmt->execute([$userId, $trackId]);
+        $stmt->execute([$deviceId, $trackId]);
     } else {
         // Remove selection
-        $query = "DELETE FROM user_tracks WHERE user_id = ? AND track_id = ?";
+        $query = "DELETE FROM device_tracks WHERE device_id = ? AND track_id = ?";
         $stmt = $pdo->prepare($query);
-        $stmt->execute([$userId, $trackId]);
+        $stmt->execute([$deviceId, $trackId]);
     }
 
     echo json_encode(['success' => true, 'message' => 'Track setting updated']);

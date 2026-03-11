@@ -34,6 +34,8 @@ async function loadTracks() {
 
     if (!tracks || tracks.error) {
       console.error("Error loading tracks:", tracks.error);
+      const tbody = document.getElementById("tracks-body");
+      tbody.innerHTML = `<tr><td colspan="2">${tracks.error || "Fehler beim Laden"}</td></tr>`;
       return;
     }
 
