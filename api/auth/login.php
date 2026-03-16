@@ -1,4 +1,19 @@
 <?php
+
+/*********************************************************
+* api/auth/login.php
+* - Session initialisieren, Cookie-Einstellungen auf dem Server sichern
+* - Entgegennahme und Validierung von POST-Login-Daten (Email, Passwort)
+* - Prüfung der Nutzerexistenz und Passwort-Validierung gegen Datenbank (-> in Tabelle users)
+* - Session-Handling bei erfolgreichem Login
+* - Rückgabe von JSON-Antworten für Erfolg oder Fehler
+*
+* Server-seitiger Code: wird auf dem Server ausgeführt (API-Endpunkt)
+* Aufgerufen clientseitig in js/login.js; durch ein Client-Login-Formular (login.html)
+* verlinkt mit: ../../system/config.php (enthält DB-Konfiguration)
+* verwendete Datenbanktabelle: users
+*********************************************************/
+
 // login.php
 ini_set('session.cookie_httponly', 1);
 // ini_set('session.cookie_secure', 1); // if using HTTPS

@@ -1,3 +1,20 @@
+/***************************************************************
+ * js/profile.js
+ * - Authentifizierung prüfen, ggf. redirect zu login.html, falls nicht eingeloggt
+ *   --> API-Interaktion (Server) mit api/auth/auth.php
+ * - Laden und Anzeigen von Userinformationen und verbundenen Geräten
+ *   --> API-Interaktion (Server) mit api/profile/read.php (verwendete Datenbanktabellen: users, devices, user_devices)
+ * - Geräte verbinden und trennen
+ *   --> API-Interaktion (Server) mit api/device/connect.php und api/device/disconnect.php
+ * - Benutzername aktualisieren
+ *   --> API-Interaktion (Server) mit api/profile/update.php
+ * - Logout-Funktion (aufgerufen in profile.html, aber hier implementiert
+ *   --> API-Interaktion (Server) mit api/auth/logout.php
+ *
+ * Client-seitiger Code: wird dem Client vom Server bereitgestellt und auf dem Client ausgeführt
+ * eingebunden in: profile.html
+ ***************************************************************/
+
 // Check if user is logged in (reusing the same function we had before)
 async function checkAuth() {
   try {
@@ -23,8 +40,9 @@ async function checkAuth() {
   }
 }
 
-// Load profile data
+// Beim Laden der Seite: Profilinformationen laden und verbundene Geräten anzeigen
 async function loadProfile() {
+  console.log("Entering loadProfile");
   const isAuthorized = await checkAuth();
   if (!isAuthorized) return;
 
@@ -36,6 +54,8 @@ async function loadProfile() {
       console.error("Error loading profile:", data.error);
       return;
     }
+
+    console.log(data.user.name);
 
     // Update user info
     document.getElementById("userName").value = data.user.name;
@@ -63,7 +83,7 @@ function renderDevices(devices) {
         `<div class="device-badge">
           Gerät: ${d.device_code}
           <button class="disconnect-btn" onclick="disconnectDevice(${d.id})" title="Trennen">&times;</button>
-        </div>`
+        </div>`,
     )
     .join("");
 }

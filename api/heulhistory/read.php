@@ -1,4 +1,18 @@
 <?php
+
+/*********************************************************
+* api/heulhistory/read.php
+* - Liest Heulhistorie aller dem Benutzer zugeordneten Geräte
+* - Sortiert Ergebnisse nach Startzeit (absteigend)
+* - Gibt Daten bzw. Fehler als JSON zurück
+* - vorausgesetzt: Benutzer-Authentifizierung ist gegeben / Session ist aktiv (Prüfung zu Beginn)
+
+* Server-seitiger Code: wird auf dem Server ausgeführt
+* Aufgerufen clientseitig in js/index.js; durch ein Client-Login-Formular (index.html)
+* Server-Interaktion mit: ../../system/config.php (PDO/DB-Verbindung), PHP-Session
+* Verwendete Datenbanktabellen: heulhistory, user_has_device
+*********************************************************/
+
 header('Content-Type: application/json');
 include_once '../../system/config.php';
 

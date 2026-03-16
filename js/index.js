@@ -1,3 +1,15 @@
+/*********************************************************
+ * js/index.js
+ * - prüft Benutzer-Authentifizierung und leitet ggf. auf Login-Seite um, falls User-Authentifizierung / Session nicht gegeben ist (Prüfung zu Beginn)
+ * - Lädt und zeigt Heulhistory (Schreievents) aus der API
+ * - Formatiert Datum, Uhrzeit und Dauer von Events
+ * - Visualisiert Heulzeit pro Tag und Heulhäufigkeit pro Stunde mit Chart.js
+ *
+ * Client-seitiger Code: wird dem Client vom Server bereitgestellt und auf dem Client ausgeführt
+ * eingebunden in: index.html
+ * API-Endpunkte: api/heulhistory/read.php
+ *********************************************************/
+
 // First check if user is authorized
 async function checkAuth() {
   try {
@@ -31,9 +43,9 @@ async function checkAuth() {
 function formatDateTime(dateString) {
   const date = new Date(dateString);
   return `${date.getDate()}.${date.getMonth() + 1}.${String(
-    date.getFullYear()
+    date.getFullYear(),
   ).slice(2)} ${String(date.getHours()).padStart(2, "0")}:${String(
-    date.getMinutes()
+    date.getMinutes(),
   ).padStart(2, "0")}`;
 }
 
@@ -95,7 +107,7 @@ function renderChart(history) {
   history.forEach((entry) => {
     const date = new Date(entry.starttime);
     const dayKey = `${date.getDate()}.${date.getMonth() + 1}.${String(
-      date.getFullYear()
+      date.getFullYear(),
     ).slice(2)}`;
     const mins = formatDurationMinutes(entry.starttime, entry.endtime);
     minutesPerDay[dayKey] = (minutesPerDay[dayKey] || 0) + mins;
@@ -109,12 +121,8 @@ function renderChart(history) {
   });
 
   // When empty, show placeholder day labels so axes are still visible
-  const labels = sorted.length > 0
-    ? sorted.map((e) => e[0])
-    : ["Heute"];
-  const data = sorted.length > 0
-    ? sorted.map((e) => e[1])
-    : [0];
+  const labels = sorted.length > 0 ? sorted.map((e) => e[0]) : ["Heute"];
+  const data = sorted.length > 0 ? sorted.map((e) => e[1]) : [0];
 
   const ctx = document.getElementById("heulchart").getContext("2d");
 
@@ -164,9 +172,7 @@ function renderTimeChart(history) {
     countPerHour[hour]++;
   });
 
-  const labels = countPerHour.map((_, h) =>
-    `${String(h).padStart(2, "0")}:00`
-  );
+  const labels = countPerHour.map((_, h) => `${String(h).padStart(2, "0")}:00`);
 
   const ctx = document.getElementById("heulchart-time").getContext("2d");
 
@@ -208,34 +214,34 @@ function renderTimeChart(history) {
 }
 
 // Seed demo heulhistory entries for the current user
-async function seedDatabase() {
-  const btn = document.getElementById("seedBtn");
-  btn.disabled = true;
-  btn.textContent = "Wird erstellt…";
+// async function seedDatabase() {
+//   const btn = document.getElementById("seedBtn");
+//   btn.disabled = true;
+//   btn.textContent = "Wird erstellt…";
 
-  try {
-    const response = await fetch("api/heulhistory/seed.php", {
-      method: "POST",
-      credentials: "include",
-    });
-    const result = await response.json();
+//   try {
+//     const response = await fetch("api/heulhistory/seed.php", {
+//       method: "POST",
+//       credentials: "include",
+//     });
+//     const result = await response.json();
 
-    if (result.error) {
-      alert(result.error);
-      btn.disabled = false;
-      btn.textContent = "Demo-Daten erstellen";
-      return;
-    }
+//     if (result.error) {
+//       alert(result.error);
+//       btn.disabled = false;
+//       btn.textContent = "Demo-Daten erstellen";
+//       return;
+//     }
 
-    // Reload the page to show the new data
-    window.location.reload();
-  } catch (error) {
-    console.error("Seed failed:", error);
-    alert("Fehler beim Erstellen der Demo-Daten");
-    btn.disabled = false;
-    btn.textContent = "Demo-Daten erstellen";
-  }
-}
+//     // Reload the page to show the new data
+//     window.location.reload();
+//   } catch (error) {
+//     console.error("Seed failed:", error);
+//     alert("Fehler beim Erstellen der Demo-Daten");
+//     btn.disabled = false;
+//     btn.textContent = "Demo-Daten erstellen";
+//   }
+// }
 
 // Load history when page loads
 document.addEventListener("DOMContentLoaded", loadHeulhistory);

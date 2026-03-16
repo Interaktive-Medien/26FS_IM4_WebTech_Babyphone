@@ -1,4 +1,15 @@
-// register.js
+/***************************************************************
+ * js/register.js
+ * - Registrierungsformular-Handling (register.html)
+ * - Senden von Name, Email und Passwort an das Backend
+ * - Anzeige von Erfolg/Misserfolg der Registrierung
+ * - Weiterleitung zur Login-Seite (login.html) bei erfolgreicher Registrierung
+ *
+ * Client-seitiger Code: wird dem Client vom Server bereitgestellt und auf dem Client ausgeführt
+ * eingebunden in: register.html
+ * Server-Interaktion mit: api/auth/register.php
+ ***************************************************************/
+
 document
   .getElementById("registerForm")
   .addEventListener("submit", async (e) => {

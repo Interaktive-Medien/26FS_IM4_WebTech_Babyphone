@@ -1,4 +1,18 @@
-<!DOCTYPE html>
+<!--------------------------------------------------------
+* profile.html
+* - Anzeige und Bearbeitung persönlicher Angaben (Name)
+* - Logout-Funktion (in profile.js implementiert)
+* - Verbindung zu einem Gerät mittels Geräte-Code
+* - Anzeige des Verbindungsstatus
+* - Navigation zu Heulhistorie (index.html) und Playlist (settings.html)
+
+* Client-seitiger Code: wird dem Client vom Server bereitgestellt und auf dem Client ausgeführt
+* eingebundenes JS: js/profile.js, ...
+* eingebundenes CSS: css/design_system.css, css/style.css, css/nav.css, css/profile.css
+* Haupt-Funktionalitäten:
+---------------------------------------------------------->
+
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -16,8 +30,17 @@
     <link rel="stylesheet" href="css/profile.css" />
   </head>
   <body>
-    <a href="profile.html" class="profile-shortcut profile-shortcut-active" aria-label="Profil">
-      <svg class="profile-shortcut-icon" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg> Profil
+    <a
+      href="profile.html"
+      class="profile-shortcut profile-shortcut-active"
+      aria-label="Profil"
+    >
+      <svg class="profile-shortcut-icon" viewBox="0 0 24 24">
+        <path
+          d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
+        />
+      </svg>
+      Profil
     </a>
 
     <div class="profile-container">
@@ -45,11 +68,12 @@
           <label for="deviceCode">Geräte-Code</label>
           <div class="device-input-row">
             <input type="text" id="deviceCode" placeholder="z.B. 1234" />
-            <button onclick="connectDevice()" class="connect-btn">Verbinden</button>
+            <button onclick="connectDevice()" class="connect-btn">
+              Verbinden
+            </button>
           </div>
         </div>
       </div>
-
     </div>
 
     <nav class="nav">

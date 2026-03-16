@@ -1,4 +1,16 @@
 <?php
+/*********************************************************
+* api/auth/auth.php
+* - Prüft, ob ein Benutzer eingeloggt ist (Session)
+* - Gibt JSON mit Benutzerinformationen (email, user_id) zurück
+* - Gibt bei nicht eingeloggtem Benutzer einen 401-Fehler als JSON zurück
+
+* Server-seitiger Code: wird auf dem Server ausgeführt (direkter API-Endpunkt)
+* aufgerufen von: js/profile.js, settings.js
+* verwendete Datenbanktabellen: keine (nur Session-Daten)
+*********************************************************/
+
+
 // index.php (API that returns JSON about the logged-in user)
 session_start();
 

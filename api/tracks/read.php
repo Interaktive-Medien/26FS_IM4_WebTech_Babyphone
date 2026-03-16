@@ -1,4 +1,18 @@
 <?php
+
+/***************************************************************
+* api/tracks/read.php
+* - Listet alle Tracks auf, markiert, ob sie auf dem Gerät ausgewählt sind
+* - Ermittelt das erste verbundene Gerät des Nutzers
+* - Gibt die Track-Liste als JSON zurück
+* - vorausgesetzt: Benutzer-Authentifizierung ist gegeben / Session ist aktiv (Prüfung zu Beginn)
+
+* Server-seitiger Code: wird auf dem Server ausgeführt
+* Aufgerufen clientseitig in js/settings.js; durch ein Client-Login-Formular (settings.html)
+* Server-Interaktion mit: ../../system/config.php (enthält DB-Verbindung)
+* verwendete Datenbanktabellen: user_has_device, device_tracks, tracks
+***************************************************************/
+
 header('Content-Type: application/json');
 include_once '../../system/config.php';
 

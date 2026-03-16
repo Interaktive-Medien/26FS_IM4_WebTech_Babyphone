@@ -1,3 +1,18 @@
+/***************************************************************
+ * js/settings.js
+ * - lädt Track-Daten und zeigt sie in einer Tabelle an
+ * - Ermöglicht das Selektieren/Abwählen von Tracks per Checkbox
+ * - Aktualisiert Track-Auswahl auf dem Server
+ * - vorausgesetzt: Benutzer-Authentifizierung gegeben / Session ist aktiv(Prüfung zu Beginn)
+ *
+ * Client-seitiger Code: wird dem Client vom Server bereitgestellt und auf dem Client ausgeführt
+ * eingebunden in: settings.html
+ * Server-Interaktion mit:
+ * - api/auth/auth.php (prüft, ob ein Benutzer eingeloggt ist (Session))
+ * - api/tracks/read.php (Profilinfos und Infos zu verbundenen Geräten anzeigen)
+ * - api/tracks/update_selected.php (Track-Auswahl des verbundenen Geräts ändern)
+ ***************************************************************/
+
 // First check if user is authorized
 async function checkAuth() {
   try {

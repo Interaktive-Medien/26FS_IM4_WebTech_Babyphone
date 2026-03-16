@@ -1,4 +1,18 @@
 <?php
+
+/********************************************************
+* api/tracks/update_selected.php
+* - Liest track_id und selected aus POST-JSON
+* - Ermittelt erstes verbundenes Gerät des Nutzers (-> Tabelle user_has_device)
+* - Fügt oder entfernt Track-Auswahl für das Gerät (-> Tabelle device_tracks)
+* - Gibt Erfolg oder Fehler als JSON zurück
+* - vorausgesetzt: Benutzer-Authentifizierung ist gegeben / Session ist aktiv (Prüfung zu Beginn)
+
+* Server-seitiger Code: wird auf dem Server ausgeführt
+* Aufgerufen clientseitig in js/settings.js; durch ein Client-Login-Formular (settings.html)
+* verwendete Datenbanktabellen: user_has_device, device_tracks
+*********************************************************/
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');

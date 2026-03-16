@@ -1,8 +1,18 @@
 <?php
-// Connect a device to the logged-in user by device_code.
-// If the device_code doesn't exist in the devices table yet, it is created (self-registration).
-// Then a row in user_has_device links the user to that device.
-// On first connect, all tracks are selected for the device by default.
+
+/*********************************************************
+* api/device/connect.php
+* - Verbindet ein Gerät mit einem eingeloggten Benutzer anhand device_code (z. B. 1234)
+* - Selbstregistrierung des Geräts, falls nicht vorhanden
+* - Zwischentabelle user_has_devices verknüpft Benutzer (Tabelle user) mit Gerät (devices)
+* - Wählt alle Tracks für das Gerät aus (device_tracks)
+* - Gibt Erfolg oder Fehler als JSON zurück
+
+* Server-seitiger Code: wird auf dem Server ausgeführt (direkter API-Endpunkt)
+* verwendete Datenbanktabellen: devices, user_has_device, device_tracks, tracks
+*********************************************************/
+
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
