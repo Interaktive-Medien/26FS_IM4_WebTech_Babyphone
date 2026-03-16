@@ -3,7 +3,7 @@
 ![Static Badge](https://img.shields.io/badge/Sprache-PHP-%23f7df1e)
 ![Static Badge](https://img.shields.io/badge/Kurs-MMP_IM4-blue)
 
-Dieses Repository ist ein Beispielprojekt für Interaktive Medien IV. **Heulradar** ist eine Web-App, mit der Eltern ihr Babyphone verwalten, eine Playlist konfigurieren und die Heulhistorie ihres Babys einsehen können.
+Dieses Repository ist ein Beispielprojekt für Interaktive Medien IV. **Heulradar** ist eine Web-App, mit der Eltern ihr Babyphone verwalten, eine Playlist konfigurieren und die Statistik einsehen können, wann ihr Baby geweint hat.
 
 Die App dient gleichzeitig als **Lernprojekt**, um die folgenden Konzepte zu verstehen:
 
@@ -46,7 +46,7 @@ Die App besteht aus zwei klar getrennten Teilen:
 └─────────────────────────────┘                           └──────────────────────────────┘
 ```
 
-**Das Prinzip:** Das Frontend (HTML/JS/CSS) läuft im Browser des Users. Wenn Daten gebraucht werden (z.B. "Zeige mir meine Heulhistorie"), schickt JavaScript einen `fetch()`-Request an eine PHP-Datei im `api/`-Ordner. Diese PHP-Datei holt die Daten aus der Datenbank und gibt sie als **JSON** zurück. JavaScript empfängt das JSON und rendert die Daten ins HTML.
+**Das Prinzip:** Das Frontend (HTML/JS/CSS) läuft im Browser des Users. Wenn Daten gebraucht werden (z.B. "Zeige mir die Statistik, wann das Baby geweint hat"), schickt JavaScript einen `fetch()`-Request an eine PHP-Datei im `api/`-Ordner. Diese PHP-Datei holt die Daten aus der Datenbank und gibt sie als **JSON** zurück. JavaScript empfängt das JSON und rendert die Daten ins HTML.
 
 ---
 
@@ -157,7 +157,7 @@ Browser                              Server
   │  Set-Cookie: PHPSESSID=abc123       │
   │ ◄────────────────────────────────── │
   │                                     │
-  │  GET /api/heulhistory/read.php      │
+  │  GET /api/sensordata/read_sensordata.php      │
   │  Cookie: PHPSESSID=abc123           │  (Browser schickt Cookie automatisch)
   │ ──────────────────────────────────► │
   │                                     │  Session "abc123" → user_id: 42
@@ -398,7 +398,7 @@ session_destroy();    // Session komplett zerstören
 ```
 heulradar/
 │
-├── index.html              ← Hauptseite: Heulhistorie (Charts + Tabelle)
+├── index.html              ← Hauptseite: Sensordata - wann hat das baby geweint? (Charts + Tabelle)
 ├── login.html              ← Login-Formular
 ├── register.html           ← Registrierungs-Formular
 ├── settings.html           ← Playlist-Verwaltung
@@ -407,7 +407,7 @@ heulradar/
 ├── js/
 │   ├── login.js            ← Login-Formular absenden
 │   ├── register.js         ← Registrierung absenden
-│   ├── index.js            ← Heulhistorie laden, Charts rendern
+│   ├── index.js            ← Sensordata laden (wann das Baby geweint hat), Charts rendern
 │   ├── settings.js         ← Tracks laden, Auswahl toggeln
 │   └── profile.js          ← Profil laden, Geräte verwalten, Logout
 │
@@ -435,8 +435,8 @@ heulradar/
 │   ├── tracks/
 │   │   ├── read.php        ← Alle Tracks mit Auswahl laden
 │   │   └── update_selected.php ← Track-Auswahl ändern
-│   └── heulhistory/
-│       ├── read.php        ← Heulhistorie laden
+│   └── sensordata/
+│       ├── read.php        ← Sensordata laden (wann hat das Baby geweint?)
 │       └── seed.php        ← Demo-Daten einfügen
 │
 ├── system/
@@ -484,7 +484,7 @@ Die App nutzt **MySQL/MariaDB** mit folgenden Tabellen:
                        └──────────────────┘              │
                                                          │
                        ┌──────────────────┐       ┌──────┴───────┐
-                       │  heulhistory     │       │   tracks     │
+                       │  sensordata      │       │   tracks     │
                        ├──────────────────┤       ├──────────────┤
                        │ id (PK)          │       │ id (PK)      │
                        │ device_id (FK)   │       │ title        │
@@ -502,7 +502,7 @@ Die App nutzt **MySQL/MariaDB** mit folgenden Tabellen:
 | `user_has_device` | Welcher User hat welches Gerät (many-to-many)             | `user_id`, `device_id`                                 |
 | `tracks`          | Verfügbare Beruhigungssongs                               | `title`                                                |
 | `device_tracks`   | Welche Tracks auf welchem Gerät aktiv sind (many-to-many) | `device_id`, `track_id`                                |
-| `heulhistory`     | Wann hat das Baby geweint?                                | `device_id`, `starttime`, `endtime`                    |
+| `sensordata`      | Wann hat das Baby geweint?                                | `device_id`, `starttime`, `endtime`                    |
 
 ### Warum Zwischentabellen (Junction Tables)?
 
@@ -550,12 +550,11 @@ Alle Endpoints befinden sich unter `api/` und geben **JSON** zurück. Geschützt
 | `api/tracks/read.php`            | GET     | Ja        | Alle Tracks mit Auswahlstatus |
 | `api/tracks/update_selected.php` | POST    | Ja        | Track-Auswahl ändern          |
 
-### Heulhistorie
+### Sensordata - wann hat das Baby geeint?
 
-| Endpoint                   | Methode | Geschützt | Beschreibung         |
-| -------------------------- | ------- | --------- | -------------------- |
-| `api/heulhistory/read.php` | GET     | Ja        | Heulhistorie laden   |
-| `api/heulhistory/seed.php` | POST    | Ja        | Demo-Daten erstellen |
+| Endpoint                             | Methode | Geschützt | Beschreibung     |
+| ------------------------------------ | ------- | --------- | ---------------- |
+| `api/sensordata/read_sensordata.php` | GET     | Ja        | Sensordata laden |
 
 ### Beispiel-Requests
 
@@ -615,17 +614,17 @@ document.addEventListener("DOMContentLoaded", loadPage);
 
 ### Seitenübersicht
 
-| Seite           | Zweck                           | API-Calls                                                                                                                                                     |
-| --------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `login.html`    | Anmeldung                       | `POST api/auth/login.php`                                                                                                                                     |
-| `register.html` | Registrierung                   | `POST api/auth/register.php`                                                                                                                                  |
-| `index.html`    | Heulhistorie (Charts + Tabelle) | `GET api/auth/auth.php`, `GET api/heulhistory/read.php`                                                                                                       |
-| `settings.html` | Playlist verwalten              | `GET api/auth/auth.php`, `GET api/tracks/read.php`, `POST api/tracks/update_selected.php`                                                                     |
-| `profile.html`  | Profil, Geräte, Logout          | `GET api/auth/auth.php`, `GET api/profile/read.php`, `POST api/device/connect_device.php`, `POST api/device/disconnect_device.php`, `GET api/auth/logout.php` |
+| Seite           | Zweck                         | API-Calls                                                                                                                                                     |
+| --------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `login.html`    | Anmeldung                     | `POST api/auth/login.php`                                                                                                                                     |
+| `register.html` | Registrierung                 | `POST api/auth/register.php`                                                                                                                                  |
+| `index.html`    | Sensordata (Charts + Tabelle) | `GET api/auth/auth.php`, `GET api/sensordata/read.php`                                                                                                        |
+| `settings.html` | Playlist verwalten            | `GET api/auth/auth.php`, `GET api/tracks/read.php`, `POST api/tracks/update_selected.php`                                                                     |
+| `profile.html`  | Profil, Geräte, Logout        | `GET api/auth/auth.php`, `GET api/profile/read.php`, `POST api/device/connect_device.php`, `POST api/device/disconnect_device.php`, `GET api/auth/logout.php` |
 
 ### Chart.js für Diagramme
 
-Die Heulhistorie-Seite (`index.html`) nutzt [Chart.js](https://www.chartjs.org/) um zwei Balkendiagramme zu rendern:
+Die Sensordata-Seite (`index.html`) nutzt [Chart.js](https://www.chartjs.org/) um zwei Balkendiagramme zu rendern:
 
 - **Heulzeit nach Tag** - Wie viele Minuten pro Tag geweint wurde
 - **Heulen nach Uhrzeit** - Zu welcher Tageszeit am meisten geweint wird

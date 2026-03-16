@@ -1,7 +1,7 @@
 <!--------------------------------------------------------
 * index.html
 - Falls nicht eingeloggt: Anzeige der login-Seite
-- Falls eingeloggt und Gerät verbunden: Anzeige einer Heulhistorie mit Tabellen und Diagrammen (Chart.js)
+- Falls eingeloggt und Gerät verbunden: Anzeige einer Historie, wann das Baby geweint hat (-> DB-Tabelle "sensordata") mit Tabellen und Diagrammen (Chart.js)
 
 * Client-seitiger Code: wird dem Client vom Server bereitgestellt und auf dem Client ausgeführt
 * eingebundenes JS: js/index.js
@@ -35,14 +35,14 @@
       Profil
     </a>
 
-    <h1>Heulhistorie</h1>
+    <h1>Wann hat das Baby geweint?</h1>
 
     <div class="chart-container">
-      <canvas id="heulchart"></canvas>
+      <canvas id="sensordata"></canvas>
     </div>
 
     <div class="chart-container">
-      <canvas id="heulchart-time"></canvas>
+      <canvas id="sensordata-time"></canvas>
     </div>
 
     <div class="scoreboard-container">
@@ -54,13 +54,13 @@
             <th>Dauer (min)</th>
           </tr>
         </thead>
-        <tbody id="heulhistory-body">
-          <!-- Data will be inserted here via JavaScript -->
+        <tbody id="sensordata-body">
+          <!-- Data will be inserted here via JavaScript in index.js -->
         </tbody>
       </table>
     </div>
 
-    <!-- Shown only when user has no heulhistory entries -->
+    <!-- Shown only when user has no sensordata entries -->
     <div id="emptyState" class="empty-state" style="display: none">
       <p>
         Keine Einträge vorhanden. Verbinde ein Babyphone auf der
@@ -73,7 +73,7 @@
     </div>
 
     <nav class="nav">
-      <a href="index.html" class="nav-link nav-link-active"> Heulhistorie </a>
+      <a href="index.html" class="nav-link nav-link-active"> Sensordata </a>
       <a href="settings.html" class="nav-link"> Playlist </a>
     </nav>
 

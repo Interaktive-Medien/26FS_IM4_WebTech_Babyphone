@@ -1,12 +1,13 @@
 <?php
+
  /*************************************************************
  * load.php
  * - receive data as a JSON string from the mc on the server 
- * - insert into database (-> Tabelle heulhistory)
+ * - insert into database (-> Tabelle sensordata)
  
  * Server-seitiger Code: wird auf dem Server ausgeführt
  * Aufgerufen clientseitig am ESP32 (mc.ino)
- * verwendete Datenbanktabellen: heulhistory
+ * verwendete Datenbanktabellen: sensordata
  *************************************************************/
 
 include_once '../../system/config.php';
@@ -19,29 +20,29 @@ include_once '../../system/config.php';
 $inputJSON = file_get_contents('php://input'); // JSON-Daten aus dem Body der Anfrage
 $input = json_decode($inputJSON, true); // Dekodieren der JSON-Daten in ein Array
 
-$is_heulsession = $input["is_heulsession"];
-$heulsession_id = $input["heulsession_id"];   
+$is_screaming = $input["is_heulsession"];
+$scream_id = $input["heulsession_id"];   
 
 try{ 
-    if ($is_heulsession == 1){
-        $sql = "INSERT INTO heulhistory (starttime) VALUES (NOW())";
+    if ($is_screaming == 1){
+        $sql = "INSERT INTO sensordata (starttime) VALUES (NOW())";
         $result = $pdo->prepare($sql);
         $result->execute();
-        $heulsession_id = $pdo->lastInsertId();
+        $scream_id = $pdo->lastInsertId();
         echo json_encode([
             "status" => "success", 
             "message" => "Session started", 
-            "heulsession_id" => $heulsession_id
+            "heulsession_id" => $scream_id
         ]);
     }
-    else if ($is_heulsession == 0){
-        $sql = "UPDATE heulhistory SET endtime = NOW() WHERE id = :heulsession_id";
+    else if ($is_screaming == 0){
+        $sql = "UPDATE sensordata SET endtime = NOW() WHERE id = :heulsession_id";
         $result = $pdo->prepare($sql);
-        $result->execute(['heulsession_id' => $heulsession_id]);
+        $result->execute(['heulsession_id' => $scream_id]);
         echo json_encode([
             "status" => "success", 
             "message" => "Session ended", 
-            "heulsession_id" => $heulsession_id
+            "heulsession_id" => $scream_id
         ]);
     }
 } 

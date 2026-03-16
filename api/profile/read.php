@@ -3,7 +3,7 @@
 /*********************************************************
 * api/profile/read.php
 * - Liest Benutzername aus users
-* - Zählt Schreie aus heulhistory für alle verbundenen Geräte
+* - Zählt Schreie aus sensordata für alle verbundenen Geräte
 * - Listet die letzten 10 Schreie (starttime, endtime)
 * - Listet verbundene Geräte (device_code)
 * - Gibt alle Daten als JSON zurück
@@ -12,7 +12,7 @@
 * Server-seitiger Code: wird auf dem Server ausgeführt
 * Aufgerufen clientseitig in js/profile.js; durch ein Client-Login-Formular (profile.html)
 * verwendete Datenbanktabellen: 
-* users, heulhistory, user_has_device, devices
+* users, sensordata, user_has_device, devices
 *********************************************************/
 
 header('Content-Type: application/json');
@@ -38,8 +38,8 @@ try {
 
     // Then get total cries across all connected devices
     $scoreQuery = "SELECT COUNT(*) as total_cries
-                   FROM heulhistory h
-                   INNER JOIN user_has_device uhd ON uhd.device_id = h.device_id
+                   FROM sensordata s
+                   INNER JOIN user_has_device uhd ON uhd.device_id = s.device_id
                    WHERE uhd.user_id = ?";
     
     $stmt = $pdo->prepare($scoreQuery);
@@ -49,11 +49,11 @@ try {
     $userInfo['total_cries'] = (int)$scoreInfo['total_cries'];
 
     // Finally get latest crying events across all connected devices
-    $activitiesQuery = "SELECT h.starttime, h.endtime
-                       FROM heulhistory h
-                       INNER JOIN user_has_device uhd ON uhd.device_id = h.device_id
+    $activitiesQuery = "SELECT s.starttime, s.endtime
+                       FROM sensordata s
+                       INNER JOIN user_has_device uhd ON uhd.device_id = s.device_id
                        WHERE uhd.user_id = ?
-                       ORDER BY h.starttime DESC
+                       ORDER BY s.starttime DESC
                        LIMIT 10";
     
     $stmt = $pdo->prepare($activitiesQuery);

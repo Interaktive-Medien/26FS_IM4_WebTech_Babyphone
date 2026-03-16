@@ -29,6 +29,13 @@ CREATE TABLE IF NOT EXISTS `user_has_device` (
     FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Available tracks for babyphone soothing playlist
+CREATE TABLE IF NOT EXISTS `tracks` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Junction table: which tracks are selected on which device (many-to-many)
 CREATE TABLE IF NOT EXISTS `device_tracks` (
   `device_id` INT NOT NULL,
@@ -41,19 +48,19 @@ CREATE TABLE IF NOT EXISTS `device_tracks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Babyphone crying history linked to a device (only the device writes these)
-CREATE TABLE IF NOT EXISTS `heulhistory` (
+CREATE TABLE IF NOT EXISTS `sensordata` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `device_id` INT NOT NULL,
   `starttime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `endtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `idx_heulhistory_device` (`device_id`),
-  CONSTRAINT `fk_heulhistory_device`
+  KEY `idx_sensordata_device` (`device_id`),
+  CONSTRAINT `fk_sensordata_device`
     FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Seed tracks once (safe on reruns)
-INSERT INTO `tracks` (`title`)
+INSERT INTO `tracks` (`title`) 
 SELECT * FROM (
   SELECT 'Another brick in the wall' UNION ALL
   SELECT 'Back in black' UNION ALL
