@@ -39,13 +39,12 @@ int ledPin = BUILTIN_LED;
 ////////////////////////////////////////////////////////////// audio trigger
 #include "get_audiovolume.h"
 #include "audioplayer.h"
-#define AUDIOVOLUME_THRESHOLD 60
+#define AUDIOVOLUME_THRESHOLD 80    // application triggers from this volume on (dB)
 #define TIME_UNTIL_PLAY 2500        // this is the minimum time it should be noisy bevore audio will be triggered
       
 int prev_is_heulsession = 0;
 unsigned long audiotrigger_startTime = 0;
 bool audio_played = false;
-
 
 void setup() {
   Serial.begin(115200);
@@ -53,7 +52,7 @@ void setup() {
   setup_audiovolume_tester();
   initAudioPlayer();             // function is in audioplayer.h
   connectWiFi();                 // connectWiFi() is in connectWiFi_hochschule.h AND connectWiFi_zuhause.h. Activate on top
-  init_audio_history_array();    // Initialize audio history array (buffer) with 0: if the audio volume > the threshold during 70% of the last x seconds --> bridging breaks. 
+  init_audio_history_array();    // Initialize audio history array (buffer) with 0: if the audio volume > the threshold during 60% of the last x seconds --> bridging breaks. 
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, 0);
   Serial.println("Start WLAN connection...");
@@ -113,8 +112,8 @@ void loop(){
 
 void save_into_db(int is_heulsession){
     JSONVar dataObject;                                      // construct JSON
-    dataObject["is_heulsession"] = is_heulsession;
-    dataObject["heulsession_id"] = heulsession_id;
+    dataObject["is_screaming"] = is_heulsession;
+    dataObject["scream_id"] = heulsession_id;                // heulsession_id befindet sich in helper_functions.h
     String jsonString = JSON.stringify(dataObject);
 
     if (WiFi.status() == WL_CONNECTED) {

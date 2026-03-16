@@ -17,7 +17,7 @@ void init_audio_history_array(){
 }
 
 
-// 70% LOGIC: is_heulsession = 1 if the audio volume > the threshold during 70% of the last x seconds --> bridging breaks
+// 70% LOGIC: is_heulsession = 1 if the audio volume > the threshold during 60% of the last x seconds --> bridging breaks
 int isMostlyLoud(int current_noise_detected){
     if (millis() - last_history_update >= 100) { // update every 100ms
         last_history_update = millis();
@@ -29,9 +29,9 @@ int isMostlyLoud(int current_noise_detected){
             if (heul_history[i] == 1) count_ones++;
         }
 
-        // noise during 70% of the time (18 of 25 values):
+        // noise during 60% of the time (18 of 25 values):
         // Only update is_heulsession here to prevent flickering
-        if (count_ones >= (BUFFER_SIZE_SMOOTH * 0.7)) {
+        if (count_ones >= (BUFFER_SIZE_SMOOTH * 0.6)) {
             return 1;
         } else {
             return 0;
@@ -60,7 +60,7 @@ int heulsession_id = 0;                                // HTTP POST request: ent
 void upload_heulsession(String jsonString){
 ////////////////////////////////////////////////////////////// start HTTP connecion and perform a POST query
     HTTPClient http;
-    http.begin("https://heulradar.hausmaenner.ch/db/load.php");
+    http.begin("https://heulradar.dorfkneipe.ch/api/sensordata/mc_write_sensordata.php");
     http.addHeader("Content-Type", "application/json");
     int httpResponseCode = http.POST(jsonString);
 
@@ -107,15 +107,23 @@ void upload_heulsession(String jsonString){
 
 // called on setup() function, once at start: select the songs that should be played (GET Request)
 int selected_tracks_ids[15];
+int device_id = 1;                   // wie eine Seriennummer fest eincodiert, sollte bei jedem Gerät anders sein.
 String selected_tracks_titles[15];
 int num_selected_tracks = 0;
 int randomTrackIndex;
 
 void updateSelectedTracks(){
     HTTPClient http;
-    http.begin("https://heulradar.hausmaenner.ch/db/get_selected_tracks.php");
+    http.begin("https://heulradar.dorfkneipe.ch/api/sensordata/mc_get_selected_tracks.php");
+    JSONVar requestObj;
+    requestObj["device_id"] = device_id;
+    String jsonString = JSON.stringify(requestObj);
+    http.addHeader("Content-Type", "application/json");   // Header setzen: Wir sagen dem Server, dass wir JSON senden
+    int httpResponseCode = http.POST(jsonString);
 
-    int httpResponseCode = http.GET();                // Send the GET request
+
+
+
     if (httpResponseCode > 0) {
         String payload = http.getString();            // Get the response payload as a string
         // Serial.println("Payload received:");

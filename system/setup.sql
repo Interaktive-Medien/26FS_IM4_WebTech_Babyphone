@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` VARCHAR(255) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uniq_users_email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  UNIQUE KEY (`email`)
+);
 
 -- Physical babyphone devices (device_code is printed on the device)
 CREATE TABLE IF NOT EXISTS `devices` (
@@ -60,23 +60,20 @@ CREATE TABLE IF NOT EXISTS `sensordata` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Seed tracks once (safe on reruns)
-INSERT INTO `tracks` (`title`) 
-SELECT * FROM (
-  SELECT 'Another brick in the wall' UNION ALL
-  SELECT 'Back in black' UNION ALL
-  SELECT 'Bohemian rhapsody' UNION ALL
-  SELECT 'Clocks' UNION ALL
-  SELECT 'Creep' UNION ALL
-  SELECT 'Don`t fear the reaper' UNION ALL
-  SELECT 'Enter sandman' UNION ALL
-  SELECT 'Hotel california' UNION ALL
-  SELECT 'I love rock`n`roll' UNION ALL
-  SELECT 'Smells like teen spirit' UNION ALL
-  SELECT 'Stairway to heaven' UNION ALL
-  SELECT 'Sympathy for the devil' UNION ALL
-  SELECT 'Under the bridge' UNION ALL
-  SELECT 'Where is my mind' UNION ALL
-  SELECT 'Wonderwall'
-) AS `seed`
-WHERE NOT EXISTS (SELECT 1 FROM `tracks`);
+INSERT INTO `tracks` (`title`) VALUES 
+('Another brick in the wall'),
+('Back in black'),
+('Bohemian rhapsody'),
+('Clocks'),
+('Creep'),
+('Don`t fear the reaper'),
+('Enter sandman'),
+('Hotel california'),
+('I love rock`n`roll'),
+('Smells like teen spirit'),
+('Stairway to heaven'),
+('Sympathy for the devil'),
+('Under the bridge'),
+('Where is my mind'),
+('Wonderwall');
 
