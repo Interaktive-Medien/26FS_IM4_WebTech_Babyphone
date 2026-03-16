@@ -1,5 +1,16 @@
 <?php
-// Disconnect a device from the logged-in user
+
+/*********************************************************
+* api/device/disconnect.php
+* - lösche die Verknüpfung zwischen Benutzer und Gerät in der Tabelle user_has_device
+
+* Server-seitiger Code: wird auf dem Server ausgeführt
+* Client-seitig aufgerufen in: 
+* - profile.js (durch Klick auf "Gerät trennen" in profil.html)
+* Server-Interaktion mit: ../../system/config.php
+* verwendete Datenbanktabellen: user_has_device
+*********************************************************/
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');

@@ -426,8 +426,8 @@ heulradar/
 │   │   ├── register.php    ← Registrierung verarbeiten
 │   │   └── logout.php      ← Session zerstören
 │   ├── device/
-│   │   ├── connect.php     ← Gerät mit Code verbinden
-│   │   ├── disconnect.php  ← Gerät trennen
+│   │   ├── connect_device.php     ← Gerät mit Code verbinden
+│   │   ├── disconnect_device.php  ← Gerät trennen
 │   │   └── list.php        ← Geräte des Users auflisten
 │   ├── profile/
 │   │   ├── read.php        ← Profildaten laden
@@ -458,7 +458,7 @@ Beispiele:
 
 - `api/auth/login.php` → Feature: Auth, Action: Login
 - `api/tracks/read.php` → Feature: Tracks, Action: Lesen
-- `api/device/connect.php` → Feature: Gerät, Action: Verbinden
+- `api/device/connect_device.php` → Feature: Gerät, Action: Verbinden
 
 ---
 
@@ -530,11 +530,11 @@ Alle Endpoints befinden sich unter `api/` und geben **JSON** zurück. Geschützt
 
 ### Geräte
 
-| Endpoint                    | Methode | Geschützt | Beschreibung               |
-| --------------------------- | ------- | --------- | -------------------------- |
-| `api/device/list.php`       | GET     | Ja        | Geräte des Users auflisten |
-| `api/device/connect.php`    | POST    | Ja        | Gerät per Code verbinden   |
-| `api/device/disconnect.php` | POST    | Ja        | Gerät trennen              |
+| Endpoint                           | Methode | Geschützt | Beschreibung               |
+| ---------------------------------- | ------- | --------- | -------------------------- |
+| `api/device/list.php`              | GET     | Ja        | Geräte des Users auflisten |
+| `api/device/connect_device.php`    | POST    | Ja        | Gerät per Code verbinden   |
+| `api/device/disconnect_device.php` | POST    | Ja        | Gerät trennen              |
 
 ### Profil
 
@@ -615,13 +615,13 @@ document.addEventListener("DOMContentLoaded", loadPage);
 
 ### Seitenübersicht
 
-| Seite           | Zweck                           | API-Calls                                                                                                                                       |
-| --------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `login.html`    | Anmeldung                       | `POST api/auth/login.php`                                                                                                                       |
-| `register.html` | Registrierung                   | `POST api/auth/register.php`                                                                                                                    |
-| `index.html`    | Heulhistorie (Charts + Tabelle) | `GET api/auth/auth.php`, `GET api/heulhistory/read.php`                                                                                         |
-| `settings.html` | Playlist verwalten              | `GET api/auth/auth.php`, `GET api/tracks/read.php`, `POST api/tracks/update_selected.php`                                                       |
-| `profile.html`  | Profil, Geräte, Logout          | `GET api/auth/auth.php`, `GET api/profile/read.php`, `POST api/device/connect.php`, `POST api/device/disconnect.php`, `GET api/auth/logout.php` |
+| Seite           | Zweck                           | API-Calls                                                                                                                                                     |
+| --------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `login.html`    | Anmeldung                       | `POST api/auth/login.php`                                                                                                                                     |
+| `register.html` | Registrierung                   | `POST api/auth/register.php`                                                                                                                                  |
+| `index.html`    | Heulhistorie (Charts + Tabelle) | `GET api/auth/auth.php`, `GET api/heulhistory/read.php`                                                                                                       |
+| `settings.html` | Playlist verwalten              | `GET api/auth/auth.php`, `GET api/tracks/read.php`, `POST api/tracks/update_selected.php`                                                                     |
+| `profile.html`  | Profil, Geräte, Logout          | `GET api/auth/auth.php`, `GET api/profile/read.php`, `POST api/device/connect_device.php`, `POST api/device/disconnect_device.php`, `GET api/auth/logout.php` |
 
 ### Chart.js für Diagramme
 

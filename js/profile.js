@@ -63,7 +63,7 @@ function renderDevices(devices) {
         `<div class="device-badge">
           Gerät: ${d.device_code}
           <button class="disconnect-btn" onclick="disconnectDevice(${d.id})" title="Trennen">&times;</button>
-        </div>`
+        </div>`,
     )
     .join("");
 }
@@ -79,7 +79,7 @@ async function connectDevice() {
   }
 
   try {
-    const response = await fetch("api/device/connect.php", {
+    const response = await fetch("api/device/connect_device.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ device_code: code }),
@@ -105,7 +105,7 @@ async function disconnectDevice(deviceId) {
   if (!confirm("Gerät wirklich trennen?")) return;
 
   try {
-    const response = await fetch("api/device/disconnect.php", {
+    const response = await fetch("api/device/disconnect_device.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ device_id: deviceId }),

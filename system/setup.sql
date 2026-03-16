@@ -29,13 +29,6 @@ CREATE TABLE IF NOT EXISTS `user_has_device` (
     FOREIGN KEY (`device_id`) REFERENCES `devices` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Available tracks for babyphone soothing playlist
-CREATE TABLE IF NOT EXISTS `tracks` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `title` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 -- Junction table: which tracks are selected on which device (many-to-many)
 CREATE TABLE IF NOT EXISTS `device_tracks` (
   `device_id` INT NOT NULL,
@@ -80,12 +73,3 @@ SELECT * FROM (
 ) AS `seed`
 WHERE NOT EXISTS (SELECT 1 FROM `tracks`);
 
--- Seed device_tracks: every device selects all tracks by default (safe on reruns)
-INSERT INTO `device_tracks` (`device_id`, `track_id`)
-SELECT `d`.`id`, `t`.`id`
-FROM `devices` AS `d`
-CROSS JOIN `tracks` AS `t`
-WHERE NOT EXISTS (
-  SELECT 1 FROM `device_tracks` AS `dt`
-  WHERE `dt`.`device_id` = `d`.`id` AND `dt`.`track_id` = `t`.`id`
-);

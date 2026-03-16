@@ -1,4 +1,15 @@
-// login.js
+/***************************************************************
+ * js/login.js
+ * - Formular-Event-Handling für Login
+ * - Login-Daten an das Backend senden (-> api/auth/login.php)
+ * - Verarbeitung der Server-Antwort (Erfolg/Misserfolg)
+ * - bei erfolgreichem Login index.html aufrufen
+ *
+ * Client-seitiger Code: wird dem Client vom Server bereitgestellt und auf dem Client ausgeführt
+ * eingebunden in: login.html
+ * Server-Interaktion mit: api/auth/login.php
+ ***************************************************************/
+
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 

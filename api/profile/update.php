@@ -1,4 +1,16 @@
 <?php
+
+/*********************************************************
+* api/profile/update.php
+* - Aktualisieren des Benutzernamens in der Datenbank
+* - Empfangen und Validieren von POST-Daten (Name),Rückgabe von JSON-Antworten (Erfolg oder Fehler)
+* - vorausgesetzt: Benutzer-Authentifizierung ist gegeben / Session ist aktiv (Prüfung zu Beginn)
+
+* Server-seitiger Code: wird auf dem Server ausgeführt
+* Aufgerufen clientseitig in js/profile.js; durch ein Client-Login-Formular (profile.html)
+* verwendete Datenbanktabellen: users
+********************************************************/
+
 header('Content-Type: application/json');
 include_once '../../system/config.php';
 

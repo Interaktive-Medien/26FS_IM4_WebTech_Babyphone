@@ -1,4 +1,20 @@
 <?php
+
+/*********************************************************
+* api/profile/read.php
+* - Liest Benutzername aus users
+* - Zählt Schreie aus heulhistory für alle verbundenen Geräte
+* - Listet die letzten 10 Schreie (starttime, endtime)
+* - Listet verbundene Geräte (device_code)
+* - Gibt alle Daten als JSON zurück
+* - vorausgesetzt: Benutzer-Authentifizierung ist gegeben / Session ist aktiv (Prüfung zu Beginn)
+*
+* Server-seitiger Code: wird auf dem Server ausgeführt
+* Aufgerufen clientseitig in js/profile.js; durch ein Client-Login-Formular (profile.html)
+* verwendete Datenbanktabellen: 
+* users, heulhistory, user_has_device, devices
+*********************************************************/
+
 header('Content-Type: application/json');
 include_once '../../system/config.php';
 

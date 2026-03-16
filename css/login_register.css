@@ -1,3 +1,8 @@
+/********************************************************
+ * css/login_register.css
+ * Eingebunden in: login.html, register.html
+ *********************************************************/
+
 /* Remove body padding on login/register pages so the background fills full height */
 body:has(.login-container) {
   padding-bottom: 0;

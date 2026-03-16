@@ -1,4 +1,7 @@
-/* Add this at the top of the file */
+/********************************************************
+ * css/design_system.css
+ * Eingebunden in: index.html, profile.html, settings.html, login.html, register.html
+ *********************************************************/
 
 /* IM Primitives */
 :root {
