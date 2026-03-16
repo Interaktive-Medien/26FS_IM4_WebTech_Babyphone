@@ -1,7 +1,7 @@
 <?php
 
 /*********************************************************
-* api/profile/read.php
+* api/profile/read_profile.php
 * - Liest Benutzername aus users
 * - Zählt Schreie aus sensordata für alle verbundenen Geräte
 * - Listet die letzten 10 Schreie (starttime, endtime)

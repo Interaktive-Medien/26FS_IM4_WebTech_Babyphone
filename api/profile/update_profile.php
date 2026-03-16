@@ -1,7 +1,7 @@
 <?php
 
 /*********************************************************
-* api/profile/update.php
+* api/profile/update_profile.php
 * - Aktualisieren des Benutzernamens in der Datenbank
 * - Empfangen und Validieren von POST-Daten (Name),Rückgabe von JSON-Antworten (Erfolg oder Fehler)
 * - vorausgesetzt: Benutzer-Authentifizierung ist gegeben / Session ist aktiv (Prüfung zu Beginn)

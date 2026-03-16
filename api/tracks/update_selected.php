@@ -1,7 +1,7 @@
 <?php
 
 /********************************************************
-* api/tracks/update_selected.php
+* api/tracks/update_selected_tracks.php
 * - Liest track_id und selected aus POST-JSON
 * - Ermittelt erstes verbundenes Gerät des Nutzers (-> Tabelle user_has_device)
 * - Fügt oder entfernt Track-Auswahl für das Gerät (-> Tabelle device_tracks)

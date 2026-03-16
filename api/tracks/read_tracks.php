@@ -1,7 +1,7 @@
 <?php
 
 /***************************************************************
-* api/tracks/read.php
+* api/tracks/read_tracks.php
 * - Listet alle Tracks auf, markiert, ob sie auf dem Gerät ausgewählt sind
 * - Ermittelt das erste verbundene Gerät des Nutzers
 * - Gibt die Track-Liste als JSON zurück

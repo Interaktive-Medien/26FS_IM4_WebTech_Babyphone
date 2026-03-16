@@ -9,8 +9,8 @@
  * eingebunden in: settings.html
  * Server-Interaktion mit:
  * - api/auth/auth.php (prüft, ob ein Benutzer eingeloggt ist (Session))
- * - api/tracks/read.php (Profilinfos und Infos zu verbundenen Geräten anzeigen)
- * - api/tracks/update_selected.php (Track-Auswahl des verbundenen Geräts ändern)
+ * - api/tracks/read_tracks.php (Profilinfos und Infos zu verbundenen Geräten anzeigen)
+ * - api/tracks/update_selected_tracks.php (Track-Auswahl des verbundenen Geräts ändern)
  ***************************************************************/
 
 // First check if user is authorized
@@ -44,7 +44,7 @@ async function loadTracks() {
   if (!isAuthorized) return;
 
   try {
-    const response = await fetch("api/tracks/read.php");
+    const response = await fetch("api/tracks/read_tracks.php");
     const tracks = await response.json();
 
     if (!tracks || tracks.error) {
@@ -79,7 +79,7 @@ async function loadTracks() {
 
 async function updateTrackSelection(trackId, selected) {
   try {
-    const response = await fetch("api/tracks/update_selected.php", {
+    const response = await fetch("api/tracks/update_selected_tracks.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

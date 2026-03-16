@@ -1,4 +1,13 @@
-// Check if user is logged in (reusing the same function we had before)
+/***************************************************************
+ * js/profile.js
+ * - Laden und Aktualisieren des Benutzerprofils (profile.html)
+ * - Anzeige, Verbindung und Trennung von Geräten
+ *
+ * Client-seitiger Code: wird dem Client vom Server bereitgestellt und auf dem Client ausgeführt
+ * eingebunden in: profile.html
+ * Server-Interaktion mit: api/auth/auth.php
+ ***************************************************************/
+
 async function checkAuth() {
   try {
     const response = await fetch("api/auth/auth.php", {
@@ -29,7 +38,7 @@ async function loadProfile() {
   if (!isAuthorized) return;
 
   try {
-    const response = await fetch("api/profile/read.php");
+    const response = await fetch("api/profile/read_profile.php");
     const data = await response.json();
 
     if (data.error) {
@@ -147,7 +156,7 @@ async function updateName() {
   }
 
   try {
-    const response = await fetch("api/profile/update.php", {
+    const response = await fetch("api/profile/update_profile.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

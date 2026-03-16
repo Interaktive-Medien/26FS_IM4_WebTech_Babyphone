@@ -1,7 +1,7 @@
 <?php
 
  /*************************************************************
- * load.php
+ * mc_write_sensordata.php
  * - receive data as a JSON string from the mc on the server 
  * - insert into database (-> Tabelle sensordata)
  

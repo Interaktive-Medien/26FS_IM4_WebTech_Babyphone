@@ -428,16 +428,16 @@ heulradar/
 │   ├── device/
 │   │   ├── connect_device.php     ← Gerät mit Code verbinden
 │   │   ├── disconnect_device.php  ← Gerät trennen
-│   │   └── list.php        ← Geräte des Users auflisten
+│   │   └── list_devices.php        ← Geräte des Users auflisten
 │   ├── profile/
-│   │   ├── read.php        ← Profildaten laden
-│   │   └── update.php      ← Namen ändern
+│   │   ├── read_profile.php        ← Profildaten laden
+│   │   └── update_profile.php      ← Namen ändern
 │   ├── tracks/
-│   │   ├── read.php        ← Alle Tracks mit Auswahl laden
-│   │   └── update_selected.php ← Track-Auswahl ändern
+│   │   ├── read_tracks.php        ← Alle Tracks mit Auswahl laden
+│   │   └── update_selected_tracks.php ← Track-Auswahl ändern
 │   └── sensordata/
-│       ├── read.php        ← Sensordata laden (wann hat das Baby geweint?)
-│       └── seed.php        ← Demo-Daten einfügen
+│       ├── read_sensordata.php        ← Sensordata laden (wann hat das Baby geweint?)
+
 │
 ├── system/
 │   ├── config.php.blank    ← Vorlage für DB-Konfiguration
@@ -545,10 +545,10 @@ Alle Endpoints befinden sich unter `api/` und geben **JSON** zurück. Geschützt
 
 ### Tracks (Playlist)
 
-| Endpoint                         | Methode | Geschützt | Beschreibung                  |
-| -------------------------------- | ------- | --------- | ----------------------------- |
-| `api/tracks/read.php`            | GET     | Ja        | Alle Tracks mit Auswahlstatus |
-| `api/tracks/update_selected.php` | POST    | Ja        | Track-Auswahl ändern          |
+| Endpoint                                | Methode | Geschützt | Beschreibung                  |
+| --------------------------------------- | ------- | --------- | ----------------------------- |
+| `api/tracks/read.php`                   | GET     | Ja        | Alle Tracks mit Auswahlstatus |
+| `api/tracks/update_selected_tracks.php` | POST    | Ja        | Track-Auswahl ändern          |
 
 ### Sensordata - wann hat das Baby geeint?
 
@@ -573,7 +573,7 @@ const result = await response.json();
 **Track-Auswahl ändern (JSON-Body):**
 
 ```javascript
-const response = await fetch("api/tracks/update_selected.php", {
+const response = await fetch("api/tracks/update_selected_tracks.php", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ track_id: 3, selected: 1 }),
@@ -619,7 +619,7 @@ document.addEventListener("DOMContentLoaded", loadPage);
 | `login.html`    | Anmeldung                     | `POST api/auth/login.php`                                                                                                                                     |
 | `register.html` | Registrierung                 | `POST api/auth/register.php`                                                                                                                                  |
 | `index.html`    | Sensordata (Charts + Tabelle) | `GET api/auth/auth.php`, `GET api/sensordata/read.php`                                                                                                        |
-| `settings.html` | Playlist verwalten            | `GET api/auth/auth.php`, `GET api/tracks/read.php`, `POST api/tracks/update_selected.php`                                                                     |
+| `settings.html` | Playlist verwalten            | `GET api/auth/auth.php`, `GET api/tracks/read.php`, `POST api/tracks/update_selected_tracks.php`                                                              |
 | `profile.html`  | Profil, Geräte, Logout        | `GET api/auth/auth.php`, `GET api/profile/read.php`, `POST api/device/connect_device.php`, `POST api/device/disconnect_device.php`, `GET api/auth/logout.php` |
 
 ### Chart.js für Diagramme
