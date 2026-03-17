@@ -30,6 +30,8 @@
 
 int ledPin = BUILTIN_LED;
 #include "helper_functions.h"
+#include "update_selected_tracks_from_db.h"
+#include "write_sensordata_into_db.h"
 
 ////////////////////////////////////////////////////////////// WLAN + Server
 #include <WiFi.h>
@@ -58,7 +60,7 @@ void setup() {
   connectWiFi();                 // connectWiFi() is in connectWiFi_hochschule.h AND connectWiFi_zuhause.h. Activate on top
   
   if (WiFi.status() == WL_CONNECTED) {
-    updateSelectedTracks();      // fetch selected tracks from database. // function is in helper_functions.h
+    update_selected_tracks();      // fetch selected tracks from database. // function is in helper_functions.h
   }
   Serial.println("------------------------------------");
 }
@@ -89,7 +91,7 @@ void loop(){
             String next_track_title = getRandomTrackName();
             // Serial.printf("Next track title: %s\n", next_track_title);
             audio_already_started_playing = true;  
-            save_into_db(is_screaming);           
+            write_sensordata_into_db(is_screaming);        // in helper_functions.h
         }
     }
 
@@ -98,7 +100,7 @@ void loop(){
         digitalWrite(ledPin, 0);                           // turn LED off
         Serial.println("permanent audio ended");
         stopTrack();                                       // find this function in audioplayer.h
-        save_into_db(is_screaming);  
+        write_sensordata_into_db(is_screaming);            // in helper_functions.h
     }
 
     prev_is_screaming = is_screaming;
@@ -109,16 +111,3 @@ void loop(){
     }
 }
 
-void save_into_db(int is_screaming){
-    // Serial.println("entering save_into_db()");
-    JSONVar dataObject;                                      // construct JSON
-    dataObject["is_screaming"] = is_screaming;
-    dataObject["scream_id"] = scream_id;                // scream_id befindet sich in helper_functions.h
-    dataObject["device_id"] = device_id;                // device_id befindet sich in helper_functions.h
-
-    String jsonString = JSON.stringify(dataObject);
-
-    if (WiFi.status() == WL_CONNECTED) {
-        upload_heulsession(jsonString);                      // upload session start and stop timestamp into DB
-    }
-}

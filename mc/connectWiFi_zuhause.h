@@ -17,13 +17,14 @@ void connectWiFi() {
 
   int attempts = 0;
   while (WiFi.status() != WL_CONNECTED && attempts < 40) {  // Max 20 Versuche (10 Sekunden)
+    rgbLedWrite(RGB_BUILTIN, 0, 20, 0);                     // rot
     delay(500);
     Serial.print(".");
     attempts++;
   }
   if (WiFi.status() == WL_CONNECTED) {
     Serial.printf("\nWiFi verbunden: SSID: %s, IP-Adresse: %s\n", ssid, WiFi.localIP().toString().c_str());
-    rgbLedWrite(RGB_BUILTIN, 0, 0, 255); 
+    rgbLedWrite(RGB_BUILTIN, 0, 0, 20);                     // blau
   } else {
     Serial.println("\n❌ WiFi Verbindung fehlgeschlagen!");
   }
