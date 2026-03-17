@@ -1,7 +1,7 @@
 /**********************************************************************************************************
  * password_hochschule.h
- * Hier befinden sich die Zugangsdaten für das WPA2-Enterprise-verschlüsselte Netzwerk, zB. eduroam an der Hochschule
- * Diese Datei ist geheim und muss in .gitignore aufgenommen werden
+ * - Hier befinden sich die Zugangsdaten für das WPA2-Enterprise-verschlüsselte Netzwerk, zB. eduroam an der Hochschule
+ * - Diese Datei ist geheim und muss in .gitignore aufgenommen werden
  **********************************************************************************************************/ 
 
 

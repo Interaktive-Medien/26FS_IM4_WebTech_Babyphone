@@ -1,12 +1,21 @@
+/******************************************************************************************************
+ * update_selected_tracks_from_db.h
+ * - HTTP POST request to server (PHP) to get the tracks selected by the user for this device
+ * - the db query will be performed only once at start.
+ * - selected tracks will be stored in an array and will be played back in random order when the baby starts crying
+******************************************************************************************************/
+
+
+
 // called on setup() function, once at start: select the songs that should be played (GET Request)
-int selected_tracks_ids[15];         // es können auch weniger als 15 Tracks ausgewählt sein. 15 ist eben die maximale Grösse
+int selected_tracks_ids[15];                                   // es können auch weniger als 15 Tracks ausgewählt sein. 15 ist eben die maximale Grösse
 String selected_tracks_titles[15];
 int num_selected_tracks = 0;
 int randomTrackIndex;
 
 void update_selected_tracks(){
     HTTPClient http;
-    http.begin("https://heulradar.dorfkneipe.ch/api/tracks/mc_get_selected_tracks.php");   // dort wird eine Datenbankabfrage gemacht: SELECT t.id, t.title FROM tracks t JOIN device_tracks dt ON t.id = dt.track_id WHERE dt.device_id = :device_id;";
+    http.begin(SERVERURL_GET_SELECTED_TRACKS);                  // dort wird eine Datenbankabfrage gemacht: SELECT t.id, t.title FROM tracks t JOIN device_tracks dt ON t.id = dt.track_id WHERE dt.device_id = :device_id;";
     JSONVar requestObj;
     requestObj["device_id"] = device_id;
     String jsonString = JSON.stringify(requestObj);

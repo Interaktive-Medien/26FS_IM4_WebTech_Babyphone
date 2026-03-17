@@ -1,7 +1,7 @@
 /******************************************************************************************************
  * audioplayer.h
- * this code is included into mc.ino
- * keep mc.ino clean and hide the audio player functionality in this file
+ * this code is included into mc.ino to keep mc.ino clean 
+ * - audio player functionality in this file
  ******************************************************************************************************/
 
 

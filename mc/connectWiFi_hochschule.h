@@ -32,12 +32,14 @@ void connectWiFi() {
 
   int attempts = 0;
   while (WiFi.status() != WL_CONNECTED && attempts < 120) {
+    rgbLedWrite(RGB_BUILTIN, 0, 10, 0);    // rot
     delay(500);
     Serial.print(".");
     attempts++;
   }
 
   if (WiFi.status() == WL_CONNECTED) {
+    rgbLedWrite(RGB_BUILTIN, 0, 0, 10);    // blau
     Serial.printf("\nWiFi verbunden: SSID: %s, IP-Adresse: %s\n", ssid, WiFi.localIP().toString().c_str());
   } else {
     Serial.println("\n❌ Verbindung fehlgeschlagen!");
