@@ -51,7 +51,6 @@ void setup() {
   delay(3000);
   setup_audiovolume_tester();
   initAudioPlayer();             // function is in audioplayer.h
-  connectWiFi();                 // connectWiFi() is in connectWiFi_hochschule.h AND connectWiFi_zuhause.h. Activate on top
   init_audio_history_array();    // Initialize audio history array (buffer) with 0: if the audio volume > the threshold during 60% of the last x seconds --> bridging breaks. 
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, 0);

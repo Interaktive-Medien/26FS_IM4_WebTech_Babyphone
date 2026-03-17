@@ -46,7 +46,7 @@ async function loadTracks() {
   if (!isAuthorized) return;
 
   try {
-    const response = await fetch("api/tracks/read_tracks.php");   
+    const response = await fetch("api/tracks/read_tracks.php");
     // response: z. B. [{"id": 1,"title": "Another brick in the wall","selected": 0},{"id": 2,"title": "Back in black","selected": 1},{...}]
 
     const tracks = await response.json();
@@ -85,15 +85,15 @@ async function loadTracks() {
 
 async function updateTrackSelection(trackId, selected) {
   try {
+    const data_to_transmit = JSON.stringify({
+      track_id: trackId,
+      selected: selected ? 1 : 0,
+    });
+
     const response = await fetch("api/tracks/update_selected_tracks.php", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        track_id: trackId,
-        selected: selected ? 1 : 0,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: data_to_transmit, // z. B.  {"track_id":10,"selected":1}
     });
 
     const result = await response.json();

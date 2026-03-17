@@ -25,6 +25,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $data = json_decode(file_get_contents("php://input"));
+// z. B.  {"track_id":10,"selected":1}  // immer wenn auf settings.html ein Listen-Item an-/abgewählt wird, wird für den jeweiligen Listeneintrag eine solche Nachricht an dieses PHP-Skript geschickt.
 
 if (!isset($data->track_id) || !isset($data->selected)) {
     echo json_encode(['error' => 'track_id and selected are required']);
