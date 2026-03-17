@@ -76,7 +76,7 @@ void loop(){
         audiotrigger_startTime = millis();                // remember start time
         audio_already_started_playing = false;                             
         digitalWrite(ledPin, 1);                          // turn LED on for feedback
-        Serial.println("Baby started screaming");
+        // Serial.println("Baby started screaming");
     }
 
     ///// case 2: audio trigger has been detected already before and is still active -> play audio if mic detects loud noise long enough without interrupt and save in db
@@ -115,6 +115,8 @@ void save_into_db(int is_screaming){
     JSONVar dataObject;                                      // construct JSON
     dataObject["is_screaming"] = is_screaming;
     dataObject["scream_id"] = scream_id;                // scream_id befindet sich in helper_functions.h
+    dataObject["device_id"] = device_id;                // device_id befindet sich in helper_functions.h
+
     String jsonString = JSON.stringify(dataObject);
 
     if (WiFi.status() == WL_CONNECTED) {

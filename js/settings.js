@@ -39,12 +39,16 @@ async function checkAuth() {
   }
 }
 
+///////////////////////////////////// Checkliste anzeigen mit Infos aus der Datenbank
+
 async function loadTracks() {
   const isAuthorized = await checkAuth();
   if (!isAuthorized) return;
 
   try {
-    const response = await fetch("api/tracks/read_tracks.php");
+    const response = await fetch("api/tracks/read_tracks.php");   
+    // response: z. B. [{"id": 1,"title": "Another brick in the wall","selected": 0},{"id": 2,"title": "Back in black","selected": 1},{...}]
+
     const tracks = await response.json();
 
     if (!tracks || tracks.error) {
@@ -76,6 +80,8 @@ async function loadTracks() {
     console.error("Error loading tracks:", error);
   }
 }
+
+///////////////////////////////////// Checkliste bearbeiten und Änderungen in DBspeichern
 
 async function updateTrackSelection(trackId, selected) {
   try {

@@ -57,7 +57,7 @@ int cast_int(JSONVar idValue) {
 
 int scream_id = 0;                                // HTTP POST request: entry id from database table will be stored here
 
-void upload_heulsession(String jsonString){
+void upload_heulsession(String jsonString){       // aufgerufen in mc.ino
 ////////////////////////////////////////////////////////////// start HTTP connecion and perform a POST query
     HTTPClient http;
     http.begin("https://heulradar.dorfkneipe.ch/api/sensordata/mc_write_sensordata.php");
@@ -127,7 +127,7 @@ void updateSelectedTracks(){
                 selected_tracks_titles[i] = (String)myObject[i]["title"];
                 num_selected_tracks++;
                 
-                Serial.print("Track %d: %s \n", (int)myObject[i]["id"], myObject[i]["title"]);
+                // Serial.print("Track ");
                 // Serial.print((int)myObject[i]["id"]);
                 // Serial.println(myObject[i]["title"]);
             }

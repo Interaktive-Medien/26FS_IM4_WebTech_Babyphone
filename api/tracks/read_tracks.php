@@ -47,7 +47,10 @@ try {
     $stmt->execute([$deviceId]);
 
     $tracks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // $tracks: z. B. [{"id": 1,"title": "Another brick in the wall","selected": 0},{"id": 2,"title": "Back in black","selected": 1},{...}]
+    
     echo json_encode($tracks);
+
 } catch (PDOException $e) {
     echo json_encode([
         'error' => 'Error fetching tracks: ' . $e->getMessage()
