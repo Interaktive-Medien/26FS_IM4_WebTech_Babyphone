@@ -1,12 +1,12 @@
 #include <HTTPClient.h>
 #include <Arduino_JSON.h> 
 
-///// smooting audio: if the audio level of x% from the rexent x seconds were above the threshold audio level, then is_heulsession is 1
+///// smooting audio: if the audio level of x% from the rexent x seconds were above the threshold audio level, then is_screaming is 1
 #define BUFFER_SIZE_SMOOTH 25                    // check for audio volume every 100ms -> 25 Werte for 2.5s
 int heul_history[BUFFER_SIZE_SMOOTH];
 int history_index = 0;
 unsigned long last_history_update = 0;
-int is_heulsession = 0;   
+int is_screaming = 0;   
 
 
 
@@ -17,7 +17,7 @@ void init_audio_history_array(){
 }
 
 
-// 70% LOGIC: is_heulsession = 1 if the audio volume > the threshold during 60% of the last x seconds --> bridging breaks
+// 70% LOGIC: is_screaming = 1 if the audio volume > the threshold during 60% of the last x seconds --> bridging breaks
 int isMostlyLoud(int current_noise_detected){
     if (millis() - last_history_update >= 100) { // update every 100ms
         last_history_update = millis();
@@ -30,7 +30,7 @@ int isMostlyLoud(int current_noise_detected){
         }
 
         // noise during 60% of the time (18 of 25 values):
-        // Only update is_heulsession here to prevent flickering
+        // Only update is_screaming here to prevent flickering
         if (count_ones >= (BUFFER_SIZE_SMOOTH * 0.6)) {
             return 1;
         } else {
@@ -55,45 +55,38 @@ int cast_int(JSONVar idValue) {
 }
 
 
-int heulsession_id = 0;                                // HTTP POST request: entry id from database table will be stored here
+int scream_id = 0;                                // HTTP POST request: entry id from database table will be stored here
 
 void upload_heulsession(String jsonString){
 ////////////////////////////////////////////////////////////// start HTTP connecion and perform a POST query
     HTTPClient http;
     http.begin("https://heulradar.dorfkneipe.ch/api/sensordata/mc_write_sensordata.php");
     http.addHeader("Content-Type", "application/json");
-    int httpResponseCode = http.POST(jsonString);
+    int httpResponseCode = http.POST(jsonString);                  // httpResponseCode == 200 wenn alles klappt
+    // Serial.printf("HTTP Response code from server: %d\n", httpResponseCode);       // 200 wenn alles klappt
 
     ////////////////////////////////////////////////////////////// process HTTP response
-    if (httpResponseCode > 0) {
+    if (httpResponseCode > 0) {                                       // 200 wenn alles klappt
         String response = http.getString();
-        // Serial.printf("HTTP Response code: %d\n", httpResponseCode);
-        // Serial.println("Response: " + response);
+        // Serial.println("Response: " + response);                   // z.B. Response: {"status":"success","message":"inserted into db: started screaming","scream_id":"116"}
 
-        // parse JSON response
+        // parse JSON response - nur zur Info
         JSONVar myObject = JSON.parse(response);
-        // int is_track_playing = 0;
         if (JSON.typeof(myObject) != "undefined") {
-            if (myObject.hasOwnProperty("heulsession_id")) {
-                int received_heulsession_id = cast_int(myObject["heulsession_id"]);     // function cast_int() is in helper_functions.h: (eg. "19" -> 19)
-                // received_heulsession_id != heulsession_id?Serial.printf("heulsession started: %d\n", received_heulsession_id):Serial.println("heulsession ended: %d\n", received_heulsession_id);
-                if(received_heulsession_id != heulsession_id){
-                    heulsession_id = received_heulsession_id;
-                    Serial.printf("new heulsession started: %d\n", received_heulsession_id);
-                    // is_track_playing = 1;
-                    // Serial.printf("is_track_playing: %d\n", is_track_playing);
+            if (myObject.hasOwnProperty("scream_id")) {
+                int received_scream_id = cast_int(myObject["scream_id"]);     // function cast_int() is in helper_functions.h: (eg. "19" -> 19)
+                // received_scream_id != scream_id?Serial.printf("heulsession started: %d\n", received_scream_id):Serial.println("heulsession ended: %d\n", received_scream_id);
+                if(received_scream_id != scream_id){
+                    scream_id = received_scream_id;
+                    Serial.printf("db: new scream_id: %d\n", received_scream_id);
                 }
-                else{
-                    // Serial.printf("is_track_playing: %d\n", is_track_playing);
-                    // if(is_track_playing == 0){
-                    Serial.printf("heulsession ended: %d\n", received_heulsession_id);
-                    // is_track_playing = 0;
+                else if(received_scream_id == scream_id){                    // wenn wenn der Server keine neue ID liefert, war die aktuelle Schreiperiode bisher noch nicht abgeschlossen. Jetzt aber.
+                    Serial.printf("db: scream ended (scream_id: %d) \n", received_scream_id);
                     Serial.println("------------------------------------");
-                    // }
                 }
             }
         } else {
-            Serial.println("Parsing failed!");
+            Serial.println("Response parsing (transmitting sensordata to server) failed");
         }
     } else {
         Serial.printf("Error on sending POST: %d\n", httpResponseCode);
@@ -106,7 +99,7 @@ void upload_heulsession(String jsonString){
 
 
 // called on setup() function, once at start: select the songs that should be played (GET Request)
-int selected_tracks_ids[15];
+int selected_tracks_ids[15];         // es können auch weniger als 15 Tracks ausgewählt sein. 15 ist eben die maximale Grösse
 int device_id = 1;                   // wie eine Seriennummer fest eincodiert, sollte bei jedem Gerät anders sein.
 String selected_tracks_titles[15];
 int num_selected_tracks = 0;
@@ -114,32 +107,27 @@ int randomTrackIndex;
 
 void updateSelectedTracks(){
     HTTPClient http;
-    http.begin("https://heulradar.dorfkneipe.ch/api/sensordata/mc_get_selected_tracks.php");
+    http.begin("https://heulradar.dorfkneipe.ch/api/tracks/mc_get_selected_tracks.php");   // dort wird eine Datenbankabfrage gemacht: SELECT t.id, t.title FROM tracks t JOIN device_tracks dt ON t.id = dt.track_id WHERE dt.device_id = :device_id;";
     JSONVar requestObj;
     requestObj["device_id"] = device_id;
     String jsonString = JSON.stringify(requestObj);
-    http.addHeader("Content-Type", "application/json");   // Header setzen: Wir sagen dem Server, dass wir JSON senden
-    int httpResponseCode = http.POST(jsonString);
-
-
-
+    http.addHeader("Content-Type", "application/json");         // Header setzen: Wir sagen dem Server, dass wir JSON senden
+    int httpResponseCode = http.POST(jsonString);               // sollte 200 (OK) sein
 
     if (httpResponseCode > 0) {
-        String payload = http.getString();            // Get the response payload as a string
-        // Serial.println("Payload received:");
-        // Serial.println(payload);                   // print whole JSON string (track infos)
+        String response = http.getString();                     // Get the response payload as a string
+        // Serial.println("Response from api/tracks/mc_get_selected_tracks.php: " + response);             // z.B. [{"id":12,"title":"Sympathy for the devil"},{"id":13,"title":"Under the bridge"}]
 
-        JSONVar myObject = JSON.parse(payload);
-
+        JSONVar myObject = JSON.parse(response);
         if (JSON.typeof(myObject) == "undefined") {
-            Serial.println("Parsing failed!");
+            Serial.println("Response parsing (fetching track selection from mc_get_selected_tracks.php) failed");
         } else {
             for (int i = 0; i < 15 && i < myObject.length(); i++) {       // Access the "selected" field of each object
                 selected_tracks_ids[i] = (int)myObject[i]["id"];
                 selected_tracks_titles[i] = (String)myObject[i]["title"];
                 num_selected_tracks++;
                 
-                // Serial.print("Track ");
+                Serial.print("Track %d: %s \n", (int)myObject[i]["id"], myObject[i]["title"]);
                 // Serial.print((int)myObject[i]["id"]);
                 // Serial.println(myObject[i]["title"]);
             }

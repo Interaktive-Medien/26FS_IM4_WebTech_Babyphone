@@ -24,25 +24,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $scream_id = $input["scream_id"];   
     
     try{ 
+        // baby started screaming -> create new entry in sensordata with starttime = NOW() and return the id of the new entry (scream_id) to the mc
         if ($is_screaming == 1){
             $sql = "INSERT INTO sensordata (starttime) VALUES (NOW())";
             $result = $pdo->prepare($sql);
             $result->execute();
-            $scream_id = $pdo->lastInsertId();
+            $scream_id = $pdo->lastInsertId();    // lastInserId() liefert die ID des zuletzt eingefügten Datensatzes
             echo json_encode([
                 "status" => "success", 
-                "message" => "Session started", 
+                "message" => "inserted into db: started screaming", 
                 "scream_id" => $scream_id
             ]);
         }
         else if ($is_screaming == 0){
-            $sql = "UPDATE sensordata SET endtime = NOW() WHERE id = :heulsession_id";
+            $sql = "UPDATE sensordata SET endtime = NOW() WHERE id = :scream_id";
             $result = $pdo->prepare($sql);
-            $result->execute(['heulsession_id' => $scream_id]);
+            $result->execute(['scream_id' => $scream_id]);
             echo json_encode([
                 "status" => "success", 
-                "message" => "Session ended", 
-                "heulsession_id" => $scream_id
+                "message" => "inserted into db: stopped screaming", 
+                "scream_id" => $scream_id
             ]);
         }
     } 

@@ -24,7 +24,7 @@
  * Install Library "Arduino_JSON" by Arduino
  *
  * You probably need to shift the value of AUDIOVOLUME_OFFSET in get_audiovolume.h 
- * define AUDIOVOLUME_THRESHOLD, from which audio level is_heulsession should be 1
+ * define AUDIOVOLUME_THRESHOLD, from which audio level is_screaming should be 1
  * For testing use a smartphone decible tester like https://apps.apple.com/ch/app/dezibel-x-dba-l%C3%A4rm-messger%C3%A4t/id448155923?l=de-DE
  ******************************************************************************************************/
 
@@ -42,9 +42,9 @@ int ledPin = BUILTIN_LED;
 #define AUDIOVOLUME_THRESHOLD 80    // application triggers from this volume on (dB)
 #define TIME_UNTIL_PLAY 2500        // this is the minimum time it should be noisy bevore audio will be triggered
       
-int prev_is_heulsession = 0;
+int prev_is_screaming = 0;
 unsigned long audiotrigger_startTime = 0;
-bool audio_played = false;
+bool audio_already_started_playing = false;
 
 void setup() {
   Serial.begin(115200);
@@ -68,41 +68,41 @@ void setup() {
 void loop(){
     float audiovolume = get_audiovolume();                       // audiotrigger
     int current_noise_detected = audiovolume > AUDIOVOLUME_THRESHOLD? 1:0;
-    is_heulsession = isMostlyLoud(current_noise_detected);       // function in helper_functions() // 70% LOGIC: is_heulsession = 1 if the audio volume > the threshold during 70% of the last x seconds --> bridging breaks
+    is_screaming = isMostlyLoud(current_noise_detected);       // function in helper_functions() // 70% LOGIC: is_heulsession = 1 if the audio volume > the threshold during 70% of the last x seconds --> bridging breaks
 
     ////////////////////////////////////////////////////////////// 3 options of signal interpretation:
     ///// case 1: audio trigger just detected
-    if (is_heulsession == 1 && prev_is_heulsession == 0) {
+    if (is_screaming == 1 && prev_is_screaming == 0) {
         audiotrigger_startTime = millis();                // remember start time
-        audio_played = false;                             
+        audio_already_started_playing = false;                             
         digitalWrite(ledPin, 1);                          // turn LED on for feedback
-        // Serial.println("Heulsession detected");
+        Serial.println("Baby started screaming");
     }
 
-    ///// case 2: audio trigger has been detected already before and is still active -> play audio if mic detects loud noise long enough without interrupt
-    if (is_heulsession == 1 && !audio_played) {
+    ///// case 2: audio trigger has been detected already before and is still active -> play audio if mic detects loud noise long enough without interrupt and save in db
+    if (is_screaming == 1 && !audio_already_started_playing) {
         if (millis() - audiotrigger_startTime >= TIME_UNTIL_PLAY) { 
-            Serial.println("save audio detection in database");
+            Serial.println("permanent audio started");
             int next_track_nr = getRandomTrackId();    
             // Serial.println(next_track_nr);
             playTrack(next_track_nr);                     // find this function in audioplayer.h
 
             String next_track_title = getRandomTrackName();
             // Serial.printf("Next track title: %s\n", next_track_title);
-            audio_played = true;  
-            save_into_db(is_heulsession);           
+            audio_already_started_playing = true;  
+            save_into_db(is_screaming);           
         }
     }
 
     ///// case 3: audio trigger is not being detected anymore.
-    if (is_heulsession == 0 && prev_is_heulsession == 1) {
+    if (is_screaming == 0 && prev_is_screaming == 1) {
         digitalWrite(ledPin, 0);                           // turn LED off
-        // Serial.println("Heulsession ended");
+        Serial.println("permanent audio ended");
         stopTrack();                                       // find this function in audioplayer.h
-        save_into_db(is_heulsession);  
+        save_into_db(is_screaming);  
     }
 
-    prev_is_heulsession = is_heulsession;
+    prev_is_screaming = is_screaming;
 
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("WiFi-Verbindung verloren, reconnect...");
@@ -110,10 +110,11 @@ void loop(){
     }
 }
 
-void save_into_db(int is_heulsession){
+void save_into_db(int is_screaming){
+    // Serial.println("entering save_into_db()");
     JSONVar dataObject;                                      // construct JSON
-    dataObject["is_screaming"] = is_heulsession;
-    dataObject["scream_id"] = heulsession_id;                // heulsession_id befindet sich in helper_functions.h
+    dataObject["is_screaming"] = is_screaming;
+    dataObject["scream_id"] = scream_id;                // scream_id befindet sich in helper_functions.h
     String jsonString = JSON.stringify(dataObject);
 
     if (WiFi.status() == WL_CONNECTED) {
