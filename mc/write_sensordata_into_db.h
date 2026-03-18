@@ -1,8 +1,9 @@
 /******************************************************************************************************
  * write_sensordata_into_db.h
- * - HTTP POST request to server (PHP) in order to save the data into database
+ * - HTTP POST request to server (PHP) in order to save sensordata into database
  * - when the baby starts crying (after a break) a new dataset in the database table will be created
- * - after the baby has stopped crying, theis dataset will be completed wth an end timestamp (UPDATE)
+ * - after the baby has stopped crying, this dataset will be completed wth an end timestamp (UPDATE)
+ * - this script calls api/sensordata/mc_write_sensordata.php on the server
 ******************************************************************************************************/
 
 

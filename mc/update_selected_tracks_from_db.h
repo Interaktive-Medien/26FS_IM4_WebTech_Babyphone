@@ -3,6 +3,7 @@
  * - HTTP POST request to server (PHP) to get the tracks selected by the user for this device
  * - the db query will be performed only once at start.
  * - selected tracks will be stored in an array and will be played back in random order when the baby starts crying
+ * - this script calls api/tracks/mc_get_selected_tracks.php on the server
 ******************************************************************************************************/
 
 
