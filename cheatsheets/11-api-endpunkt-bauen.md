@@ -123,3 +123,7 @@ const result = await response.json();
 - [REST API Design](https://restfulapi.net/)
 - [PDO Prepared Statements](https://www.php.net/manual/de/pdo.prepared-statements.php)
 - [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+
+---
+
+← Zurück: [10 Passwort-Hashing](./10-passwort-hashing.md)

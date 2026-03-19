@@ -67,3 +67,7 @@ echo password_hash("gleich", PASSWORD_DEFAULT);
 - [password_hash()](https://www.php.net/manual/de/function.password-hash.php)
 - [password_verify()](https://www.php.net/manual/de/function.password-verify.php)
 - [Passwortsicherheit](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
+
+---
+
+← Zurück: [09 Sessions](./09-sessions.md) · → Weiter: [11 API-Endpunkt bauen](./11-api-endpunkt-bauen.md)

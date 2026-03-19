@@ -90,3 +90,7 @@ $userId = $_SESSION['user_id'];
 - [session_start()](https://www.php.net/manual/de/function.session-start.php)
 - [PHP Sessions](https://www.php.net/manual/de/book.session.php)
 - [session_regenerate_id()](https://www.php.net/manual/de/function.session-regenerate-id.php)
+
+---
+
+← Zurück: [08 JSON in PHP](./08-json.md) · → Weiter: [10 Passwort-Hashing](./10-passwort-hashing.md)

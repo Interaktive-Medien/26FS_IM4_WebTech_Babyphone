@@ -31,3 +31,7 @@ echo "Hallo Welt";
 ### Quellen
 
 - [PHP Grundlagen](https://developer.mozilla.org/en-US/docs/Glossary/PHP)
+
+---
+
+→ Weiter: [01 Variablen & Datentypen](./01-variablen.md)

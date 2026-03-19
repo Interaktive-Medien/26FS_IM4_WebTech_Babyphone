@@ -83,3 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 - [$_GET](https://www.php.net/manual/de/reserved.variables.get.php)
 - [file_get_contents('php://input')](https://www.php.net/manual/de/wrappers.php.php)
 - [json_decode](https://www.php.net/manual/de/function.json-decode.php)
+
+---
+
+← Zurück: [03 Bedingungen](./03-bedingungen.md) · → Weiter: [05 PDO – Datenbankverbindung](./05-pdo-datenbankverbindung.md)

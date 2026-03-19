@@ -78,3 +78,7 @@ echo json_encode($daten);
 - [PHP Arrays](https://www.php.net/manual/de/language.types.array.php)
 - [foreach](https://www.php.net/manual/de/control-structures.foreach.php)
 - [json_encode](https://www.php.net/manual/de/function.json-encode.php)
+
+---
+
+← Zurück: [01 Variablen & Datentypen](./01-variablen.md) · → Weiter: [03 Bedingungen](./03-bedingungen.md)

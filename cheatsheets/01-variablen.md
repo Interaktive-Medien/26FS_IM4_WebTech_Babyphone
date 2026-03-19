@@ -58,3 +58,7 @@ $text = (string) 100;  // $text ist jetzt der String "100"
 ### Quellen
 - [PHP Variablen](https://www.php.net/manual/de/language.variables.basics.php)
 - [PHP Datentypen](https://www.php.net/manual/de/language.types.php)
+
+---
+
+← Zurück: [00 Was ist PHP?](./00-was-ist-php.md) · → Weiter: [02 Arrays](./02-arrays.md)

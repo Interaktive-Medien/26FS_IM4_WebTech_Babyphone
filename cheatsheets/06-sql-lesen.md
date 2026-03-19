@@ -86,3 +86,7 @@ SELECT * FROM sensordata ORDER BY starttime DESC LIMIT 10
 - [PDO::fetch](https://www.php.net/manual/de/pdostatement.fetch.php)
 - [PDO::fetchAll](https://www.php.net/manual/de/pdostatement.fetchall.php)
 - [JOIN erklärt](https://dev.mysql.com/doc/refman/8.0/en/join.html)
+
+---
+
+← Zurück: [05 PDO – Datenbankverbindung](./05-pdo-datenbankverbindung.md) · → Weiter: [07 SQL – Daten schreiben](./07-sql-schreiben.md)

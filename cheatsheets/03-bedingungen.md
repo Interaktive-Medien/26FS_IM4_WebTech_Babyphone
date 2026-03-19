@@ -89,3 +89,7 @@ echo json_encode(['status' => 'ok']);
 - [if/else](https://www.php.net/manual/de/control-structures.if.php)
 - [Vergleichsoperatoren](https://www.php.net/manual/de/language.operators.comparison.php)
 - [isset()](https://www.php.net/manual/de/function.isset.php)
+
+---
+
+← Zurück: [02 Arrays](./02-arrays.md) · → Weiter: [04 POST & GET](./04-post-get.md)

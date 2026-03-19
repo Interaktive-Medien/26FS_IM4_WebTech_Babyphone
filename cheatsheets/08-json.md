@@ -83,3 +83,7 @@ Häufige HTTP-Statuscodes:
 - [json_encode](https://www.php.net/manual/de/function.json-encode.php)
 - [json_decode](https://www.php.net/manual/de/function.json-decode.php)
 - [HTTP Statuscodes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+
+---
+
+← Zurück: [07 SQL – Daten schreiben](./07-sql-schreiben.md) · → Weiter: [09 Sessions](./09-sessions.md)

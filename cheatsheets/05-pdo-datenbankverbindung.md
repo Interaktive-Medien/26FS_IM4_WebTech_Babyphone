@@ -68,3 +68,7 @@ try {
 - [PDO Einführung](https://www.php.net/manual/de/intro.pdo.php)
 - [PDO Verbindung](https://www.php.net/manual/de/pdo.construct.php)
 - [Prepared Statements](https://www.php.net/manual/de/pdo.prepared-statements.php)
+
+---
+
+← Zurück: [04 POST & GET](./04-post-get.md) · → Weiter: [06 SQL – Daten lesen](./06-sql-lesen.md)

@@ -126,3 +126,7 @@ try {
 - [DELETE Statement](https://dev.mysql.com/doc/refman/8.0/en/delete.html)
 - [lastInsertId()](https://www.php.net/manual/de/pdo.lastinsertid.php)
 - [rowCount()](https://www.php.net/manual/de/pdostatement.rowcount.php)
+
+---
+
+← Zurück: [06 SQL – Daten lesen](./06-sql-lesen.md) · → Weiter: [08 JSON in PHP](./08-json.md)
