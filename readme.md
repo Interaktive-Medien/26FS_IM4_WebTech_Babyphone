@@ -1,9 +1,9 @@
-# Heulradar - Babyphone Web App
+# Nestfunk - Babyphone Web App
 
 ![Static Badge](https://img.shields.io/badge/Sprache-PHP-%23f7df1e)
 ![Static Badge](https://img.shields.io/badge/Kurs-MMP_IM4-blue)
 
-Dieses Repository ist ein Beispielprojekt für Interaktive Medien IV. **Heulradar** ist eine Web-App, mit der Eltern ihr Babyphone verwalten, eine Playlist konfigurieren und die Statistik einsehen können, wann ihr Baby geweint hat.
+Dieses Repository ist ein Beispielprojekt für Interaktive Medien IV. **Nestfunk** ist eine Web-App, mit der Eltern ihr Babyphone verwalten, eine Playlist konfigurieren und die Statistik einsehen können, wann ihr Baby geweint hat.
 
 Die App dient gleichzeitig als **Lernprojekt**, um die folgenden Konzepte zu verstehen:
 
@@ -93,7 +93,7 @@ Frontend (HTML + JS)  ──fetch()──►  Backend (PHP API)  ──SQL──
 
 ```javascript
 // ✅ So machen wir es - klare Trennung
-const response = await fetch("api/tracks/read.php");
+const response = await fetch("api/tracks/read_tracks.php");
 const tracks = await response.json();
 
 // Jetzt können wir die Daten beliebig darstellen
@@ -396,9 +396,9 @@ session_destroy();    // Session komplett zerstören
 ## 4. Projektstruktur
 
 ```
-heulradar/
+nestfunk/
 │
-├── index.html              ← Hauptseite: Sensordata - wann hat das baby geweint? (Charts + Tabelle)
+├── index.html              ← Hauptseite: Weinstatistik (Charts + Tabelle)
 ├── login.html              ← Login-Formular
 ├── register.html           ← Registrierungs-Formular
 ├── settings.html           ← Playlist-Verwaltung
@@ -421,23 +421,35 @@ heulradar/
 │
 ├── api/                    ← ⭐ Alle Backend-Endpoints (geben JSON zurück)
 │   ├── auth/
-│   │   ├── auth.php        ← Session prüfen ("Bin ich eingeloggt?")
-│   │   ├── login.php       ← Login verarbeiten
-│   │   ├── register.php    ← Registrierung verarbeiten
-│   │   └── logout.php      ← Session zerstören
+│   │   ├── auth.php                        ← Session prüfen ("Bin ich eingeloggt?")
+│   │   ├── login.php                       ← Login verarbeiten
+│   │   ├── register.php                    ← Registrierung verarbeiten
+│   │   └── logout.php                      ← Session zerstören
 │   ├── device/
-│   │   ├── connect_device.php     ← Gerät mit Code verbinden
-│   │   ├── disconnect_device.php  ← Gerät trennen
-│   │   └── list_devices.php        ← Geräte des Users auflisten
+│   │   ├── connect_device.php              ← Gerät mit Code verbinden
+│   │   └── disconnect_device.php           ← Gerät trennen
 │   ├── profile/
-│   │   ├── read_profile.php        ← Profildaten laden
-│   │   └── update_profile.php      ← Namen ändern
+│   │   ├── read_profile.php                ← Profildaten + verbundene Geräte laden
+│   │   └── update_profile.php              ← Namen ändern
 │   ├── tracks/
-│   │   ├── read_tracks.php        ← Alle Tracks mit Auswahl laden
-│   │   └── update_selected_tracks.php ← Track-Auswahl ändern
+│   │   ├── read_tracks.php                 ← Alle Tracks mit Auswahlstatus laden
+│   │   ├── update_selected_tracks.php      ← Track-Auswahl ändern
+│   │   └── mc_get_selected_tracks.php      ← Ausgewählte Tracks für den MC liefern
 │   └── sensordata/
-│       ├── read_sensordata.php        ← Sensordata laden (wann hat das Baby geweint?)
-
+│       ├── read_sensordata.php             ← Sensordata laden (wann hat das Baby geweint?)
+│       ├── mc_write_sensordata.php         ← Sensordata vom MC empfangen und speichern
+│       └── seed_sensordata.php             ← Demo-Einträge für Testzwecke erstellen
+│
+├── mc/                     ← Arduino/ESP32 Mikrocontroller-Code
+│   ├── mc.ino                              ← Haupt-Sketch
+│   ├── audioplayer.h                       ← Audiowiedergabe
+│   ├── get_audiovolume.h                   ← Lautstärkeerkennung (Babyschreierkennung)
+│   ├── helper_functions.h                  ← Hilfsfunktionen
+│   ├── connectWiFi_hochschule.h            ← WLAN-Verbindung (Hochschule)
+│   ├── connectWiFi_zuhause.h               ← WLAN-Verbindung (Zuhause)
+│   ├── update_selected_tracks_from_db.h    ← Tracks von der DB abrufen
+│   ├── write_sensordata_into_db.h          ← Sensordata in die DB schreiben
+│   └── simulate_mc.html                    ← MC-Simulator im Browser (für Tests)
 │
 ├── system/
 │   ├── config.php.blank    ← Vorlage für DB-Konfiguration
@@ -457,7 +469,7 @@ api/{feature}/{action}.php
 Beispiele:
 
 - `api/auth/login.php` → Feature: Auth, Action: Login
-- `api/tracks/read.php` → Feature: Tracks, Action: Lesen
+- `api/tracks/read_tracks.php` → Feature: Tracks, Action: Lesen
 - `api/device/connect_device.php` → Feature: Gerät, Action: Verbinden
 
 ---
@@ -530,31 +542,33 @@ Alle Endpoints befinden sich unter `api/` und geben **JSON** zurück. Geschützt
 
 ### Geräte
 
-| Endpoint                           | Methode | Geschützt | Beschreibung               |
-| ---------------------------------- | ------- | --------- | -------------------------- |
-| `api/device/list.php`              | GET     | Ja        | Geräte des Users auflisten |
-| `api/device/connect_device.php`    | POST    | Ja        | Gerät per Code verbinden   |
-| `api/device/disconnect_device.php` | POST    | Ja        | Gerät trennen              |
+| Endpoint                           | Methode | Geschützt | Beschreibung             |
+| ---------------------------------- | ------- | --------- | ------------------------ |
+| `api/device/connect_device.php`    | POST    | Ja        | Gerät per Code verbinden |
+| `api/device/disconnect_device.php` | POST    | Ja        | Gerät trennen            |
 
 ### Profil
 
-| Endpoint                 | Methode | Geschützt | Beschreibung               |
-| ------------------------ | ------- | --------- | -------------------------- |
-| `api/profile/read.php`   | GET     | Ja        | Profildaten + Geräte laden |
-| `api/profile/update.php` | POST    | Ja        | Namen ändern               |
+| Endpoint                        | Methode | Geschützt | Beschreibung               |
+| ------------------------------- | ------- | --------- | -------------------------- |
+| `api/profile/read_profile.php`  | GET     | Ja        | Profildaten + Geräte laden |
+| `api/profile/update_profile.php`| POST    | Ja        | Namen ändern               |
 
 ### Tracks (Playlist)
 
-| Endpoint                                | Methode | Geschützt | Beschreibung                  |
-| --------------------------------------- | ------- | --------- | ----------------------------- |
-| `api/tracks/read.php`                   | GET     | Ja        | Alle Tracks mit Auswahlstatus |
-| `api/tracks/update_selected_tracks.php` | POST    | Ja        | Track-Auswahl ändern          |
+| Endpoint                                   | Methode | Geschützt | Beschreibung                         |
+| ------------------------------------------ | ------- | --------- | ------------------------------------ |
+| `api/tracks/read_tracks.php`               | GET     | Ja        | Alle Tracks mit Auswahlstatus        |
+| `api/tracks/update_selected_tracks.php`    | POST    | Ja        | Track-Auswahl ändern                 |
+| `api/tracks/mc_get_selected_tracks.php`    | GET     | Nein      | Ausgewählte Tracks für den MC        |
 
-### Sensordata - wann hat das Baby geeint?
+### Sensordata
 
-| Endpoint                             | Methode | Geschützt | Beschreibung     |
-| ------------------------------------ | ------- | --------- | ---------------- |
-| `api/sensordata/read_sensordata.php` | GET     | Ja        | Sensordata laden |
+| Endpoint                                   | Methode | Geschützt | Beschreibung                              |
+| ------------------------------------------ | ------- | --------- | ----------------------------------------- |
+| `api/sensordata/read_sensordata.php`       | GET     | Ja        | Sensordata laden (wann hat Baby geweint?) |
+| `api/sensordata/mc_write_sensordata.php`   | POST    | Nein      | Sensordata vom MC empfangen & speichern   |
+| `api/sensordata/seed_sensordata.php`       | POST    | Ja        | Demo-Einträge erstellen                   |
 
 ### Beispiel-Requests
 
@@ -614,20 +628,20 @@ document.addEventListener("DOMContentLoaded", loadPage);
 
 ### Seitenübersicht
 
-| Seite           | Zweck                         | API-Calls                                                                                                                                                     |
-| --------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `login.html`    | Anmeldung                     | `POST api/auth/login.php`                                                                                                                                     |
-| `register.html` | Registrierung                 | `POST api/auth/register.php`                                                                                                                                  |
-| `index.html`    | Sensordata (Charts + Tabelle) | `GET api/auth/auth.php`, `GET api/sensordata/read.php`                                                                                                        |
-| `settings.html` | Playlist verwalten            | `GET api/auth/auth.php`, `GET api/tracks/read.php`, `POST api/tracks/update_selected_tracks.php`                                                              |
-| `profile.html`  | Profil, Geräte, Logout        | `GET api/auth/auth.php`, `GET api/profile/read.php`, `POST api/device/connect_device.php`, `POST api/device/disconnect_device.php`, `GET api/auth/logout.php` |
+| Seite           | Zweck                         | API-Calls                                                                                                                                                                              |
+| --------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `login.html`    | Anmeldung                     | `POST api/auth/login.php`                                                                                                                                                              |
+| `register.html` | Registrierung                 | `POST api/auth/register.php`                                                                                                                                                           |
+| `index.html`    | Weinstatistik (Charts + Tabelle) | `GET api/auth/auth.php`, `GET api/sensordata/read_sensordata.php`, `POST api/sensordata/seed_sensordata.php`                                                                        |
+| `settings.html` | Playlist verwalten            | `GET api/auth/auth.php`, `GET api/tracks/read_tracks.php`, `POST api/tracks/update_selected_tracks.php`                                                                                |
+| `profile.html`  | Profil, Geräte, Logout        | `GET api/auth/auth.php`, `GET api/profile/read_profile.php`, `POST api/device/connect_device.php`, `POST api/device/disconnect_device.php`, `GET api/auth/logout.php`                 |
 
 ### Chart.js für Diagramme
 
-Die Sensordata-Seite (`index.html`) nutzt [Chart.js](https://www.chartjs.org/) um zwei Balkendiagramme zu rendern:
+Die Statistik-Seite (`index.html`) nutzt [Chart.js](https://www.chartjs.org/) um zwei Balkendiagramme zu rendern:
 
-- **Heulzeit nach Tag** - Wie viele Minuten pro Tag geweint wurde
-- **Heulen nach Uhrzeit** - Zu welcher Tageszeit am meisten geweint wird
+- **Weinzeit nach Tag** - Wie viele Minuten pro Tag geweint wurde
+- **Weinen nach Uhrzeit** - Zu welcher Tageszeit am meisten geweint wird
 
 Die Daten werden per API geladen und mit JavaScript in Chart.js-kompatible Strukturen transformiert.
 
@@ -676,6 +690,6 @@ $pass = 'mein_passwort';   // DB-Passwort
 ## 9. Troubleshooting
 
 - **Login funktioniert nicht nach Datei-Verschiebung:** Cache im Browser löschen oder in einem privaten Tab testen. PHP-Sessions können bei Pfadänderungen Probleme machen.
-- **Datenbank-Fehler:** Prüfe die Zugangsdaten in `system/config.php`. Nutze `system/test_connection.php` um die Verbindung zu testen.
+- **Datenbank-Fehler:** Prüfe die Zugangsdaten in `system/config.php`.
 - **Keine Daten auf der Hauptseite:** Verbinde zuerst ein Gerät auf der Profilseite (beliebigen Code eingeben) und erstelle dann Demo-Daten über den Button auf der Hauptseite.
 - **401 Unauthorized bei API-Calls:** Stelle sicher, dass `credentials: "include"` bei fetch-Requests gesetzt ist, wenn Frontend und Backend auf verschiedenen Domains laufen.
