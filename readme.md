@@ -24,6 +24,7 @@ Die App dient gleichzeitig als **Lernprojekt**, um die folgenden Konzepte zu ver
 7. [Frontend: Wie die Seiten funktionieren](#7-frontend-wie-die-seiten-funktionieren)
 8. [Installation](#8-installation)
 9. [Troubleshooting](#9-troubleshooting)
+10. [Cheatsheets](#10-cheatsheets)
 
 ---
 
@@ -693,3 +694,24 @@ $pass = 'mein_passwort';   // DB-Passwort
 - **Datenbank-Fehler:** Prüfe die Zugangsdaten in `system/config.php`.
 - **Keine Daten auf der Hauptseite:** Verbinde zuerst ein Gerät auf der Profilseite (beliebigen Code eingeben) und erstelle dann Demo-Daten über den Button auf der Hauptseite.
 - **401 Unauthorized bei API-Calls:** Stelle sicher, dass `credentials: "include"` bei fetch-Requests gesetzt ist, wenn Frontend und Backend auf verschiedenen Domains laufen.
+
+---
+
+## 10. Cheatsheets
+
+Kurzreferenzen zu den wichtigsten PHP-Themen dieses Projekts:
+
+| # | Thema | Link |
+|---|-------|------|
+| 00 | Was ist PHP? | [00-was-ist-php.md](cheatsheets_php/00-was-ist-php.md) |
+| 01 | Variablen & Datentypen | [01-variablen.md](cheatsheets_php/01-variablen.md) |
+| 02 | Arrays | [02-arrays.md](cheatsheets_php/02-arrays.md) |
+| 03 | Bedingungen | [03-bedingungen.md](cheatsheets_php/03-bedingungen.md) |
+| 04 | POST & GET – Daten empfangen | [04-post-get.md](cheatsheets_php/04-post-get.md) |
+| 05 | PDO – Datenbankverbindung | [05-pdo-datenbankverbindung.md](cheatsheets_php/05-pdo-datenbankverbindung.md) |
+| 06 | SQL – Daten lesen (SELECT) | [06-sql-lesen.md](cheatsheets_php/06-sql-lesen.md) |
+| 07 | SQL – Daten schreiben (INSERT, UPDATE, DELETE) | [07-sql-schreiben.md](cheatsheets_php/07-sql-schreiben.md) |
+| 08 | JSON in PHP | [08-json.md](cheatsheets_php/08-json.md) |
+| 09 | Sessions | [09-sessions.md](cheatsheets_php/09-sessions.md) |
+| 10 | Passwort-Hashing | [10-passwort-hashing.md](cheatsheets_php/10-passwort-hashing.md) |
+| 11 | API-Endpunkt bauen | [11-api-endpunkt-bauen.md](cheatsheets_php/11-api-endpunkt-bauen.md) |
