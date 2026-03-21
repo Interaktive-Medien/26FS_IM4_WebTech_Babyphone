@@ -1,3 +1,4 @@
 *config.php
 .vscode
 test_connection.php
+*.DS_Store
