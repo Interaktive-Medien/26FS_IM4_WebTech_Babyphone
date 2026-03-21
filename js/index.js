@@ -213,34 +213,5 @@ function renderTimeChart(history) {
   });
 }
 
-// Seed demo sensordata entries for the current user
-async function seedDatabase() {
-  const btn = document.getElementById("seedBtn");
-  btn.disabled = true;
-  btn.textContent = "Wird erstellt…";
-
-  try {
-    const response = await fetch("api/sensordata/seed_sensordata.php", {
-      method: "POST",
-      credentials: "include",
-    });
-    const result = await response.json();
-
-    //     if (result.error) {
-    //       alert(result.error);
-    //       btn.disabled = false;
-    //       btn.textContent = "Demo-Daten erstellen";
-    //       return;
-    //     }
-
-    window.location.reload();
-  } catch (error) {
-    console.error("Seed failed:", error);
-    alert("Fehler beim Erstellen der Demo-Daten");
-    btn.disabled = false;
-    btn.textContent = "Demo-Daten erstellen";
-  }
-}
-
 // Load history when page loads
 document.addEventListener("DOMContentLoaded", loadSensordata);

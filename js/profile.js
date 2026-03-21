@@ -32,9 +32,8 @@ async function checkAuth() {
   }
 }
 
-// Beim Laden der Seite: Profilinformationen laden und verbundene Geräten anzeigen
+// Load profile data
 async function loadProfile() {
-  console.log("Entering loadProfile");
   const isAuthorized = await checkAuth();
   if (!isAuthorized) return;
 
@@ -46,8 +45,6 @@ async function loadProfile() {
       console.error("Error loading profile:", data.error);
       return;
     }
-
-    console.log(data.user.name);
 
     // Update user info
     document.getElementById("userName").value = data.user.name;

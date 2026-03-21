@@ -1,12 +1,3 @@
--- Sensordaten vom Babyphone
-CREATE TABLE `heulhistory` (
-  `id` INT NOT NULL AUTO_INCREMENT , 
-  `device_id` INT NOT NULL DEFAULT 1,
-  `starttime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-  `endtime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , 
-  PRIMARY KEY (`id`)
-) ENGINE = InnoDB;
-
 -- Core users table
 CREATE TABLE IF NOT EXISTS `users` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -86,12 +77,3 @@ INSERT INTO `tracks` (`title`) VALUES
 ('Where is my mind'),
 ('Wonderwall');
 
--- Seed device_tracks: every device selects all tracks by default (safe on reruns)
--- INSERT INTO `device_tracks` (`device_id`, `track_id`)
--- SELECT `d`.`id`, `t`.`id`
--- FROM `devices` AS `d`
--- CROSS JOIN `tracks` AS `t`
--- WHERE NOT EXISTS (
---   SELECT 1 FROM `device_tracks` AS `dt`
---   WHERE `dt`.`device_id` = `d`.`id` AND `dt`.`track_id` = `t`.`id`
--- );
