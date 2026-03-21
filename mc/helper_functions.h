@@ -25,8 +25,6 @@ int heul_history[BUFFER_SIZE_SMOOTH];
 int history_index = 0;
 unsigned long last_history_update = 0;
 int is_screaming = 0;   
-int device_id = 1;                   // wie eine Seriennummer fest eincodiert, sollte bei jedem Gerät anders sein.
-
 
 void init_audio_history_array(){     // called in setup() of mc.ino
     for(int i = 0; i < BUFFER_SIZE_SMOOTH; i++) {

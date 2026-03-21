@@ -29,11 +29,12 @@
  ******************************************************************************************************/
 
 // int ledPin = BUILTIN_LED;
-const String SERVERURL_GET_SELECTED_TRACKS ="https://heulradar.dorfkneipe.ch/api/tracks/mc_get_selected_tracks.php";
-const String SERVERURL_WRITE_SENSORDATA ="https://heulradar.dorfkneipe.ch/api/sensordata/mc_write_sensordata.php";
+const String SERVERURL_GET_SELECTED_TRACKS ="https://nestfunk.hausmaenner.ch/api/tracks/mc_get_selected_tracks.php";
+const String SERVERURL_WRITE_SENSORDATA ="https://nestfunk.hausmaenner.ch/api/sensordata/mc_write_sensordata.php";
+const int DEVICE_ID = 1;      // wie eine Seriennummer fest eincodiert, sollte bei jedem Gerät anders sein. used in write_sensordata_into_db.h
+
 #include <HTTPClient.h>
 #include <Arduino_JSON.h> 
-
 #include "helper_functions.h"
 #include "update_selected_tracks_from_db.h"
 #include "write_sensordata_into_db.h"
@@ -57,14 +58,21 @@ void setup() {
   Serial.begin(115200);
   delay(3000);
   setup_audiovolume_tester();
-  initAudioPlayer();             // function is in audioplayer.h
-  init_audio_history_array();    // Initialize audio history array (buffer) with 0: if the audio volume > the threshold during 60% of the last x seconds --> bridging breaks. 
+  initAudioPlayer();                                             // function is in audioplayer.h
+  init_audio_history_array();                                    // Initialize audio history array (buffer) with 0: if the audio volume > the threshold during 60% of the last x seconds --> bridging breaks. 
   digitalWrite(BUILTIN_LED, 0);
   Serial.println("Start WLAN connection...");
-  connectWiFi();                 // connectWiFi() is in connectWiFi_hochschule.h AND connectWiFi_zuhause.h. Activate on top
+  connectWiFi();                                                 // connectWiFi() is in connectWiFi_hochschule.h AND connectWiFi_zuhause.h. Activate on top
   
   if (WiFi.status() == WL_CONNECTED) {
-    update_selected_tracks();      // fetch selected tracks from database. // function is in helper_functions.h
+    update_selected_tracks();                                    // fetch selected tracks from database. // function is in update_selected_tracks_from_db.h
+  }
+  Serial.println("------------------------------------");
+  Serial.println("selected tracks");
+
+  for (int i = 0; i < 15; i++) {
+    Serial.print(selected_tracks_ids[i]);
+    Serial.println(selected_tracks_titles[i]);
   }
   Serial.println("------------------------------------");
 }
@@ -73,14 +81,14 @@ void setup() {
 void loop(){
     float audiovolume = get_audiovolume();                       // audiotrigger
     int current_noise_detected = audiovolume > AUDIOVOLUME_THRESHOLD? 1:0;
-    is_screaming = isMostlyLoud(current_noise_detected);       // function in helper_functions() // 70% LOGIC: is_heulsession = 1 if the audio volume > the threshold during 70% of the last x seconds --> bridging breaks
+    is_screaming = isMostlyLoud(current_noise_detected);         // function in helper_functions() // 70% LOGIC: is_heulsession = 1 if the audio volume > the threshold during 70% of the last x seconds --> bridging breaks
 
     ////////////////////////////////////////////////////////////// 3 options of signal interpretation:
     ///// case 1: audio trigger just detected
     if (is_screaming == 1 && prev_is_screaming == 0) {
-        audiotrigger_startTime = millis();                // remember start time
+        audiotrigger_startTime = millis();                       // remember start time
         audio_already_started_playing = false;                             
-        digitalWrite(BUILTIN_LED, 1);                          // turn LED on for feedback
+        digitalWrite(BUILTIN_LED, 1);                            // turn LED on for feedback
         // Serial.println("Baby started screaming");
     }
 
@@ -90,33 +98,33 @@ void loop(){
             Serial.println("permanent audio started");
             int next_track_nr = getRandomTrackId();    
             // Serial.println(next_track_nr);
-            playTrack(next_track_nr);                     // find this function in audioplayer.h
+            playTrack(next_track_nr);                            // find this function in audioplayer.h
 
             String next_track_title = getRandomTrackName();
             // Serial.printf("Next track title: %s\n", next_track_title);
             audio_already_started_playing = true;  
-            write_sensordata_into_db(is_screaming);        // in helper_functions.h
+            write_sensordata_into_db(is_screaming);              // in helper_functions.h
         }
     }
 
     ///// case 3: audio trigger is not being detected anymore.
     if (is_screaming == 0 && prev_is_screaming == 1) {
-        digitalWrite(BUILTIN_LED, 0);                      // turn LED off
+        digitalWrite(BUILTIN_LED, 0);                            // turn LED off
         Serial.println("permanent audio ended");
-        stopTrack();                                       // find this function in audioplayer.h
-        write_sensordata_into_db(is_screaming);            // in helper_functions.h
+        stopTrack();                                             // find this function in audioplayer.h
+        write_sensordata_into_db(is_screaming);                  // in helper_functions.h
     }
 
     prev_is_screaming = is_screaming;
 
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("WiFi-Verbindung verloren, reconnect...");
-        rgbLedWrite(RGB_BUILTIN, 0, 10, 0);                // rot
+        rgbLedWrite(RGB_BUILTIN, 0, 10, 0);                      // rot
         connectWiFi();
     }
     else{  // WL_CONNECTED
         if(is_screaming == 0){
-          rgbLedWrite(RGB_BUILTIN, 0, 0, 10);              // blau
+          rgbLedWrite(RGB_BUILTIN, 0, 0, 10);                    // blau
         }
     }
 }
