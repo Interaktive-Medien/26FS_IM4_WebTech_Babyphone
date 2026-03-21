@@ -15,7 +15,7 @@ void write_sensordata_into_db(int is_screaming){
     JSONVar dataObject;                                      // construct JSON
     dataObject["is_screaming"] = is_screaming;
     dataObject["scream_id"] = scream_id;                // scream_id befindet sich in helper_functions.h
-    dataObject["device_id"] = DEVICE_ID;                // device_id befindet sich in mc.ino
+    dataObject["serialnumber"] = SERIAL_NUMBER;                // SERIAL_NUMBER befindet sich in mc.ino
 
     String jsonString = JSON.stringify(dataObject);
 

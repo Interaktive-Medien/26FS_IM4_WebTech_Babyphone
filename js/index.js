@@ -7,15 +7,17 @@
  *
  * Client-seitiger Code: wird dem Client vom Server bereitgestellt und auf dem Client ausgeführt
  * eingebunden in: index.html
- * API-Endpunkte: api/sensordata/read.php
+ * API-Endpunkte: api/sensordata/read_sensordata.php
  *********************************************************/
 
 // First check if user is authorized
 async function checkAuth() {
   try {
     const response = await fetch("api/auth/auth.php", {
+      // eg. {email: 'jan.fiess@fhgr.ch', user_id: 4}
       credentials: "include",
     });
+
     // ^ IMPORTANT if you need cookies
 
     // If server returns 401:
@@ -26,6 +28,7 @@ async function checkAuth() {
 
     // Otherwise parse the JSON
     const result = await response.json();
+    // console.log(result);
 
     // Possibly check if result has an error:
     if (result.error || !result.email) {
@@ -65,6 +68,8 @@ async function loadSensordata() {
   try {
     const response = await fetch("api/sensordata/read_sensordata.php");
     const history = await response.json();
+    console.log("Loaded sensordata history:", history);
+    // eg. [{id: 23, starttime: '2026-03-21 20:50:27', endtime: '2026-03-21 20:50:37'}{...}]
 
     if (!history || history.error) {
       console.error("Error loading sensordata:", history.error);

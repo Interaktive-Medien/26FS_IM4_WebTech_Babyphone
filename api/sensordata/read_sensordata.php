@@ -32,8 +32,10 @@ try {
               ORDER BY s.starttime DESC";
     $stmt = $pdo->prepare($query);
     $stmt->execute([$_SESSION['user_id']]);
+    // $stmt->execute();
 
     $history = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // eg. [{id: 23, starttime: '2026-03-21 20:50:27', endtime: '2026-03-21 20:50:37'}{...}]
     echo json_encode($history);
 } catch (PDOException $e) {
     echo json_encode([

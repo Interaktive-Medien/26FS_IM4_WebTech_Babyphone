@@ -31,7 +31,7 @@
 // int ledPin = BUILTIN_LED;
 const String SERVERURL_GET_SELECTED_TRACKS ="https://nestfunk.hausmaenner.ch/api/tracks/mc_get_selected_tracks.php";
 const String SERVERURL_WRITE_SENSORDATA ="https://nestfunk.hausmaenner.ch/api/sensordata/mc_write_sensordata.php";
-const int DEVICE_ID = 1;      // wie eine Seriennummer fest eincodiert, sollte bei jedem Gerät anders sein. used in write_sensordata_into_db.h
+const int SERIAL_NUMBER = 1;      // Seriennummer fest eincodiert, sollte bei jedem Gerät anders sein. used in write_sensordata_into_db.h
 
 #include <HTTPClient.h>
 #include <Arduino_JSON.h> 

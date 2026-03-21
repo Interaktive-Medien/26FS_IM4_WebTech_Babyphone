@@ -22,15 +22,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $is_screaming = $input["is_screaming"];
     $scream_id = $input["scream_id"];   
-    $device_id = $input["device_id"];   
+    $serialnumber = $input["serialnumber"];   
     // $device_id = 1;   
     
     try{ 
         // baby started screaming -> create new entry in sensordata with starttime = NOW() and return the id of the new entry (scream_id) to the mc
         if ($is_screaming == 1){
-            $sql = "INSERT INTO sensordata (device_id, starttime) VALUES (:device_id, NOW())";
+            $sql = "INSERT INTO sensordata (device_id, starttime)
+                SELECT id, NOW()
+                FROM devices
+                WHERE device_code = :serialnumber;";
+
+                // wenn die Seriennummer "1" ist, wird in die Spalte device_id der Tabelle sensordata evtl. eine andere id (z. B. 5) eingetragen, wenn die Seriennummer in der Tabelle devices bei der id = 5 hinterlegt ist.
+
             $result = $pdo->prepare($sql);
-            $result->execute([':device_id' => $device_id]);
+            $result->execute([':serialnumber' => $serialnumber]);
             $scream_id = $pdo->lastInsertId();    // lastInserId() liefert die ID des zuletzt eingefügten Datensatzes
             echo json_encode([
                 "status" => "success", 
