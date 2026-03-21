@@ -9,8 +9,8 @@
  * eingebunden in: settings.html
  * Server-Interaktion mit:
  * - api/auth/auth.php (prüft, ob ein Benutzer eingeloggt ist (Session))
- * - api/tracks/read.php (Profilinfos und Infos zu verbundenen Geräten anzeigen)
- * - api/tracks/update_selected.php (Track-Auswahl des verbundenen Geräts ändern)
+ * - api/tracks/read_tracks.php (Profilinfos und Infos zu verbundenen Geräten anzeigen)
+ * - api/tracks/update_selected_tracks.php (Track-Auswahl des verbundenen Geräts ändern)
  ***************************************************************/
 
 // First check if user is authorized
@@ -39,12 +39,16 @@ async function checkAuth() {
   }
 }
 
+///////////////////////////////////// Checkliste anzeigen mit Infos aus der Datenbank
+
 async function loadTracks() {
   const isAuthorized = await checkAuth();
   if (!isAuthorized) return;
 
   try {
-    const response = await fetch("api/tracks/read.php");
+    const response = await fetch("api/tracks/read_tracks.php");
+    // response: z. B. [{"id": 1,"title": "Another brick in the wall","selected": 0},{"id": 2,"title": "Back in black","selected": 1},{...}]
+
     const tracks = await response.json();
 
     if (!tracks || tracks.error) {
@@ -77,17 +81,19 @@ async function loadTracks() {
   }
 }
 
+///////////////////////////////////// Checkliste bearbeiten und Änderungen in DBspeichern
+
 async function updateTrackSelection(trackId, selected) {
   try {
-    const response = await fetch("api/tracks/update_selected.php", {
+    const data_to_transmit = JSON.stringify({
+      track_id: trackId,
+      selected: selected ? 1 : 0,
+    });
+
+    const response = await fetch("api/tracks/update_selected_tracks.php", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        track_id: trackId,
-        selected: selected ? 1 : 0,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: data_to_transmit, // z. B.  {"track_id":10,"selected":1}
     });
 
     const result = await response.json();

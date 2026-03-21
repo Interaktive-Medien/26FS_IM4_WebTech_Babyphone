@@ -1,13 +1,13 @@
 /*********************************************************
  * js/index.js
  * - prüft Benutzer-Authentifizierung und leitet ggf. auf Login-Seite um, falls User-Authentifizierung / Session nicht gegeben ist (Prüfung zu Beginn)
- * - Lädt und zeigt Heulhistory (Schreievents) aus der API
+ * - Lädt und zeigt sensordata (Schreievents) aus der API
  * - Formatiert Datum, Uhrzeit und Dauer von Events
- * - Visualisiert Heulzeit pro Tag und Heulhäufigkeit pro Stunde mit Chart.js
+ * - Visualisiert Dauer am Weinen pro Tag und Häufigkeit pro Stunde mit Chart.js
  *
  * Client-seitiger Code: wird dem Client vom Server bereitgestellt und auf dem Client ausgeführt
  * eingebunden in: index.html
- * API-Endpunkte: api/heulhistory/read.php
+ * API-Endpunkte: api/sensordata/read.php
  *********************************************************/
 
 // First check if user is authorized
@@ -57,21 +57,21 @@ function formatDurationMinutes(startTime, endTime) {
 }
 
 // Function to load and display all crying events
-async function loadHeulhistory() {
+async function loadSensordata() {
   // First check authorization
   const isAuthorized = await checkAuth();
   if (!isAuthorized) return;
 
   try {
-    const response = await fetch("api/heulhistory/read.php");
+    const response = await fetch("api/sensordata/read_sensordata.php");
     const history = await response.json();
 
     if (!history || history.error) {
-      console.error("Error loading heulhistory:", history.error);
+      console.error("Error loading sensordata:", history.error);
       return;
     }
 
-    const tbody = document.getElementById("heulhistory-body");
+    const tbody = document.getElementById("sensordata-body");
     tbody.innerHTML = ""; // Clear existing rows
 
     if (history.length === 0) {
@@ -96,7 +96,7 @@ async function loadHeulhistory() {
     renderChart(history);
     renderTimeChart(history);
   } catch (error) {
-    console.error("Error loading heulhistory:", error);
+    console.error("Error loading sensordata:", error);
   }
 }
 
@@ -124,7 +124,7 @@ function renderChart(history) {
   const labels = sorted.length > 0 ? sorted.map((e) => e[0]) : ["Heute"];
   const data = sorted.length > 0 ? sorted.map((e) => e[1]) : [0];
 
-  const ctx = document.getElementById("heulchart").getContext("2d");
+  const ctx = document.getElementById("sensordata").getContext("2d");
 
   new Chart(ctx, {
     type: "bar",
@@ -132,7 +132,7 @@ function renderChart(history) {
       labels: labels,
       datasets: [
         {
-          label: "Heulzeit (min)",
+          label: "Wie lange geweint (min)",
           data: data,
           backgroundColor: "#ff6724",
           borderRadius: 6,
@@ -145,7 +145,7 @@ function renderChart(history) {
         legend: { display: false },
         title: {
           display: true,
-          text: "Heulzeit nach Tag",
+          text: "Wie lange geweint nach Tag",
           font: { size: 16 },
         },
       },
@@ -174,7 +174,7 @@ function renderTimeChart(history) {
 
   const labels = countPerHour.map((_, h) => `${String(h).padStart(2, "0")}:00`);
 
-  const ctx = document.getElementById("heulchart-time").getContext("2d");
+  const ctx = document.getElementById("sensordata-time").getContext("2d");
 
   new Chart(ctx, {
     type: "bar",
@@ -182,7 +182,7 @@ function renderTimeChart(history) {
       labels: labels,
       datasets: [
         {
-          label: "Anzahl Heulen",
+          label: "Wie oft geweint?",
           data: countPerHour,
           backgroundColor: "#ff6724",
           borderRadius: 6,
@@ -195,7 +195,7 @@ function renderTimeChart(history) {
         legend: { display: false },
         title: {
           display: true,
-          text: "Heulen nach Uhrzeit",
+          text: "Weinen nach Uhrzeit",
           font: { size: 16 },
         },
       },
@@ -213,35 +213,34 @@ function renderTimeChart(history) {
   });
 }
 
-// Seed demo heulhistory entries for the current user
-// async function seedDatabase() {
-//   const btn = document.getElementById("seedBtn");
-//   btn.disabled = true;
-//   btn.textContent = "Wird erstellt…";
+// Seed demo sensordata entries for the current user
+async function seedDatabase() {
+  const btn = document.getElementById("seedBtn");
+  btn.disabled = true;
+  btn.textContent = "Wird erstellt…";
 
-//   try {
-//     const response = await fetch("api/heulhistory/seed.php", {
-//       method: "POST",
-//       credentials: "include",
-//     });
-//     const result = await response.json();
+  try {
+    const response = await fetch("api/sensordata/seed_sensordata.php", {
+      method: "POST",
+      credentials: "include",
+    });
+    const result = await response.json();
 
-//     if (result.error) {
-//       alert(result.error);
-//       btn.disabled = false;
-//       btn.textContent = "Demo-Daten erstellen";
-//       return;
-//     }
+    //     if (result.error) {
+    //       alert(result.error);
+    //       btn.disabled = false;
+    //       btn.textContent = "Demo-Daten erstellen";
+    //       return;
+    //     }
 
-//     // Reload the page to show the new data
-//     window.location.reload();
-//   } catch (error) {
-//     console.error("Seed failed:", error);
-//     alert("Fehler beim Erstellen der Demo-Daten");
-//     btn.disabled = false;
-//     btn.textContent = "Demo-Daten erstellen";
-//   }
-// }
+    window.location.reload();
+  } catch (error) {
+    console.error("Seed failed:", error);
+    alert("Fehler beim Erstellen der Demo-Daten");
+    btn.disabled = false;
+    btn.textContent = "Demo-Daten erstellen";
+  }
+}
 
 // Load history when page loads
-document.addEventListener("DOMContentLoaded", loadHeulhistory);
+document.addEventListener("DOMContentLoaded", loadSensordata);

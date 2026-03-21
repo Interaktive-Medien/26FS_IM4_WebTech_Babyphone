@@ -1,9 +1,8 @@
 /**********************************************************************************************************
  * password_zuhause.h
- * Hier befinden sich die Zugangsdaten für ein gewöhnliches Heimnetzwerk
- * Diese Datei ist geheim und muss in .gitignore aufgenommen werden
- **********************************************************************************************************/ 
-
+ * - Hier befinden sich die Zugangsdaten für ein gewöhnliches Heimnetzwerk
+ * - Diese Datei ist geheim und muss in .gitignore aufgenommen werden
+ **********************************************************************************************************/
 
 #pragma once
 

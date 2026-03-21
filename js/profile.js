@@ -1,21 +1,13 @@
 /***************************************************************
  * js/profile.js
- * - Authentifizierung prüfen, ggf. redirect zu login.html, falls nicht eingeloggt
- *   --> API-Interaktion (Server) mit api/auth/auth.php
- * - Laden und Anzeigen von Userinformationen und verbundenen Geräten
- *   --> API-Interaktion (Server) mit api/profile/read.php (verwendete Datenbanktabellen: users, devices, user_devices)
- * - Geräte verbinden und trennen
- *   --> API-Interaktion (Server) mit api/device/connect.php und api/device/disconnect.php
- * - Benutzername aktualisieren
- *   --> API-Interaktion (Server) mit api/profile/update.php
- * - Logout-Funktion (aufgerufen in profile.html, aber hier implementiert
- *   --> API-Interaktion (Server) mit api/auth/logout.php
+ * - Laden und Aktualisieren des Benutzerprofils (profile.html)
+ * - Anzeige, Verbindung und Trennung von Geräten
  *
  * Client-seitiger Code: wird dem Client vom Server bereitgestellt und auf dem Client ausgeführt
  * eingebunden in: profile.html
+ * Server-Interaktion mit: api/auth/auth.php
  ***************************************************************/
 
-// Check if user is logged in (reusing the same function we had before)
 async function checkAuth() {
   try {
     const response = await fetch("api/auth/auth.php", {
@@ -47,7 +39,7 @@ async function loadProfile() {
   if (!isAuthorized) return;
 
   try {
-    const response = await fetch("api/profile/read.php");
+    const response = await fetch("api/profile/read_profile.php");
     const data = await response.json();
 
     if (data.error) {
@@ -99,7 +91,7 @@ async function connectDevice() {
   }
 
   try {
-    const response = await fetch("api/device/connect.php", {
+    const response = await fetch("api/device/connect_device.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ device_code: code }),
@@ -125,7 +117,7 @@ async function disconnectDevice(deviceId) {
   if (!confirm("Gerät wirklich trennen?")) return;
 
   try {
-    const response = await fetch("api/device/disconnect.php", {
+    const response = await fetch("api/device/disconnect_device.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ device_id: deviceId }),
@@ -167,7 +159,7 @@ async function updateName() {
   }
 
   try {
-    const response = await fetch("api/profile/update.php", {
+    const response = await fetch("api/profile/update_profile.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
