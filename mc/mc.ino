@@ -28,13 +28,13 @@
  * For testing use a smartphone decible tester like https://apps.apple.com/ch/app/dezibel-x-dba-l%C3%A4rm-messger%C3%A4t/id448155923?l=de-DE
  ******************************************************************************************************/
 
-// int ledPin = BUILTIN_LED;
+// modify settings below
 const String SERVERURL_GET_SELECTED_TRACKS ="https://nestfunk.hausmaenner.ch/api/tracks/mc_get_selected_tracks.php";
 const String SERVERURL_WRITE_SENSORDATA ="https://nestfunk.hausmaenner.ch/api/sensordata/mc_write_sensordata.php";
 const int SERIAL_NUMBER = 1;        // Seriennummer fest eincodiert, sollte bei jedem Gerät anders sein. used in write_sensordata_into_db.h
 #define AUDIOVOLUME_THRESHOLD 80    // used in loop() of mc.ino | application triggers from this volume on (dB)
-#define TIME_UNTIL_PLAY 2500        // used in loop() of mc.ino | this is the minimum time it should be noisy bevore audio will be triggered
-      
+  
+
 
 #include <HTTPClient.h>
 #include <Arduino_JSON.h> 
@@ -58,7 +58,7 @@ bool audio_already_started_playing = false;
 void setup() {
   Serial.begin(115200);
   delay(3000);
-  setup_audiovolume_tester();
+  setup_audiovolume_tester();                                    // function is in get_audiovolume.h
   initAudioPlayer();                                             // function is in audioplayer.h
   init_audio_history_array();                                    // Initialize audio history array (buffer) with 0: if the audio volume > the threshold during 60% of the last x seconds --> bridging breaks. 
   digitalWrite(BUILTIN_LED, 0);
@@ -97,15 +97,15 @@ void loop(){
 
     ///// case 2: audio trigger has been detected already before and is still active -> play audio if mic detects loud noise long enough without interrupt and save in db
     if (is_screaming == 1 && !audio_already_started_playing) {
-        if (millis() - audiotrigger_startTime >= TIME_UNTIL_PLAY) { 
+        if (millis() - audiotrigger_startTime >= 2500) {         // warte noch ein paar Sekunden, bis Musik losgeht und DB Eintrag getätigt wird.
             Serial.println("permanent audio started");
             int next_track_nr = getRandomTrackId();    
             // Serial.println(next_track_nr);
             playTrack(next_track_nr);                            // in audioplayer.h  |  playTrack() vs. stopTrack()
 
             String next_track_title = getRandomTrackName();
-            Serial.print("Next track title: ");
-            Serial.println(next_track_title);
+            // Serial.print("Next track title: ");
+            // Serial.println(next_track_title);
             audio_already_started_playing = true;  
             write_sensordata_into_db(is_screaming);              // in write_sensordata_into_db.h
         }
@@ -129,7 +129,7 @@ void loop(){
     }
     else{  // WL_CONNECTED
         if(is_screaming == 0){
-          rgbLedWrite(RGB_BUILTIN, 0, 0, 10);                    // blau (GRB)
+          rgbLedWrite(RGB_BUILTIN, 10, 0, 0);                    // grün (GRB)
         }
     }
 }

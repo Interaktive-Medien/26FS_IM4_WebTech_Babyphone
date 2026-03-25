@@ -24,8 +24,8 @@ void update_selected_tracks(){                                  // called in mc.
     int httpResponseCode = http.POST(jsonString);               // sollte 200 (OK) sein
 
     if (httpResponseCode > 0) {
-        String response = http.getString();                     // Get the response payload as a string
-        // Serial.println("Response from api/tracks/mc_get_selected_tracks.php: " + response);             // z.B. [{"id":12,"title":"Sympathy for the devil"},{"id":13,"title":"Under the bridge"}]
+        String response = http.getString();                     // Get the response payload as a string    // z.B. [{"id":12,"title":"Sympathy for the devil"},{"id":13,"title":"Under the bridge"}]
+        // Serial.println("Response from api/tracks/mc_get_selected_tracks.php: " + response);            
 
         JSONVar myObject = JSON.parse(response);
         if (JSON.typeof(myObject) == "undefined") {
@@ -42,7 +42,7 @@ void update_selected_tracks(){                                  // called in mc.
             }
         }
     } else {
-        Serial.print("Error on sending GET: ");
+        Serial.print("Error on sending GET (update_selected_tracks_from:db): ");
         Serial.println(httpResponseCode);
     }
     http.end();

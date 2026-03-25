@@ -24,7 +24,7 @@ void connectWiFi() {
   }
   if (WiFi.status() == WL_CONNECTED) {
     Serial.printf("\nWiFi verbunden: SSID: %s, IP-Adresse: %s\n", ssid, WiFi.localIP().toString().c_str());
-    rgbLedWrite(RGB_BUILTIN, 0, 0, 10);                     // blau
+    rgbLedWrite(RGB_BUILTIN, 10, 0, 0);                     // grün
   } else {
     Serial.println("\n❌ WiFi Verbindung fehlgeschlagen!");
   }

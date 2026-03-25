@@ -46,10 +46,14 @@ void write_sensordata_into_db(int is_screaming){
         if (JSON.typeof(myObject) != "undefined") {
             if (myObject.hasOwnProperty("scream_id")) {
                 int received_scream_id = cast_int(myObject["scream_id"]);     // function cast_int() is in helper_functions.h: (eg. "19" -> 19)
+                
+                // Baby beginnt zu schreien
                 if(received_scream_id != scream_id){
                     scream_id = received_scream_id;
                     Serial.printf("db: new scream_id: %d\n", received_scream_id);
                 }
+
+                // Baby hört auf zu schreien
                 else if(received_scream_id == scream_id){                     // wenn wenn der Server keine neue ID liefert, war die aktuelle Schreiperiode bisher noch nicht abgeschlossen. Jetzt aber.
                     Serial.printf("db: scream ended (scream_id: %d) \n", received_scream_id);
                     Serial.println("------------------------------------");
