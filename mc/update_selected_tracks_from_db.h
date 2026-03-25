@@ -16,9 +16,9 @@ int randomTrackIndex;
 
 void update_selected_tracks(){                                  // called in mc.ino
     HTTPClient http;
-    http.begin(SERVERURL_GET_SELECTED_TRACKS);                  // dort wird eine Datenbankabfrage gemacht: SELECT t.id, t.title FROM tracks t JOIN device_tracks dt ON t.id = dt.track_id WHERE dt.device_id = :device_id;";
+    http.begin(SERVERURL_GET_SELECTED_TRACKS);                  // mc_get_selected_tracks.php: dort wird eine Datenbankabfrage gemacht: SELECT t.id, t.title FROM tracks t JOIN device_tracks dt ON t.id = dt.track_id WHERE dt.device_id = :device_id;";
     JSONVar requestObj;
-    requestObj["device_id"] = DEVICE_ID;                        // constant in mc.ino
+    requestObj["serialnumber"] = SERIAL_NUMBER;                 // constant in mc.ino
     String jsonString = JSON.stringify(requestObj);
     http.addHeader("Content-Type", "application/json");         // Header setzen: Wir sagen dem Server, dass wir JSON senden
     int httpResponseCode = http.POST(jsonString);               // sollte 200 (OK) sein

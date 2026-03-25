@@ -14,10 +14,12 @@ void write_sensordata_into_db(int is_screaming){
     // Serial.println("entering write_sensordata_into_db()");
     JSONVar dataObject;                                      // construct JSON
     dataObject["is_screaming"] = is_screaming;
-    dataObject["scream_id"] = scream_id;                // scream_id befindet sich in helper_functions.h
+    dataObject["scream_id"] = scream_id;                
     dataObject["serialnumber"] = SERIAL_NUMBER;                // SERIAL_NUMBER befindet sich in mc.ino
 
     String jsonString = JSON.stringify(dataObject);
+    Serial.print("write_sensordata_into_db.h: jsonString: ");
+    Serial.println(jsonString);           
 
     ////////////////////////////////////////////////////////////// start HTTP connection and perform a POST query
     HTTPClient http;

@@ -16,14 +16,23 @@ header('Content-Type: application/json'); // sets Content-Type of the answer to 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $inputJSON = file_get_contents('php://input');
     $input = json_decode($inputJSON, true);
-    $device_id = $input["device_id"];  // mc muss bei der Anfrage eine device_id mitschicken
-    // $device_id = 1;                 // only for troubleshooting
+    $serialnumber = $input["serialnumber"];  // mc muss bei der Anfrage eine device_id mitschicken
+    // $serialnumber = 1;                 // only for troubleshooting
 
     try{ 
-        $sql = "SELECT t.id, t.title FROM tracks t JOIN device_tracks dt ON t.id = dt.track_id WHERE dt.device_id = :device_id;"; 
+        $sql = "SELECT t.id, t.title FROM tracks t JOIN device_tracks dt ON t.id = dt.track_id WHERE dt.device_id = :serialnumber;"; 
+        $sql = 
+        "SELECT 
+            t.id, 
+            t.title 
+        FROM tracks t 
+        JOIN device_tracks dt ON t.id = dt.track_id 
+        JOIN devices d ON dt.device_id = d.id 
+        WHERE d.device_code = :serialnumber;"; 
+        
         $stmt = $pdo->prepare($sql);
         $stmt->execute(
-            ['device_id' => $device_id]
+            ['serialnumber' => $serialnumber]
         );
         $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($response);

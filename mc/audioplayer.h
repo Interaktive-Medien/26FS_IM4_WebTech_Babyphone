@@ -69,5 +69,10 @@ void playTrack(int i){
 }
 
 void stopTrack() {
-  controlAudioPlayer(STOP, 0); // Datenteil ist bei Stop 0
+  controlAudioPlayer(STOP, 0);       // Datenteil ist bei Stop 0
+}
+
+void stopTrackAfterDelay(int delaytime) {     // Song soll nicht sofort aufhören zu spielen
+  delay(delaytime);
+  controlAudioPlayer(STOP, 0);       // Datenteil ist bei Stop 0
 }

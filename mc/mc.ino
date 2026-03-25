@@ -32,6 +32,9 @@
 const String SERVERURL_GET_SELECTED_TRACKS ="https://nestfunk.hausmaenner.ch/api/tracks/mc_get_selected_tracks.php";
 const String SERVERURL_WRITE_SENSORDATA ="https://nestfunk.hausmaenner.ch/api/sensordata/mc_write_sensordata.php";
 const int SERIAL_NUMBER = 1;      // Seriennummer fest eincodiert, sollte bei jedem Gerät anders sein. used in write_sensordata_into_db.h
+#define AUDIOVOLUME_THRESHOLD 80    // application triggers from this volume on (dB)
+#define TIME_UNTIL_PLAY 2500        // this is the minimum time it should be noisy bevore audio will be triggered
+      
 
 #include <HTTPClient.h>
 #include <Arduino_JSON.h> 
@@ -47,9 +50,6 @@ const int SERIAL_NUMBER = 1;      // Seriennummer fest eincodiert, sollte bei je
 ////////////////////////////////////////////////////////////// audio trigger
 #include "get_audiovolume.h"
 #include "audioplayer.h"
-#define AUDIOVOLUME_THRESHOLD 80    // application triggers from this volume on (dB)
-#define TIME_UNTIL_PLAY 2500        // this is the minimum time it should be noisy bevore audio will be triggered
-      
 int prev_is_screaming = 0;
 unsigned long audiotrigger_startTime = 0;
 bool audio_already_started_playing = false;
@@ -67,12 +67,14 @@ void setup() {
   if (WiFi.status() == WL_CONNECTED) {
     update_selected_tracks();                                    // fetch selected tracks from database. // function is in update_selected_tracks_from_db.h
   }
+  Serial.print("serialnumber: ");
+  Serial.println("SERIAL_NUMBER");
   Serial.println("------------------------------------");
   Serial.println("selected tracks");
 
-  for (int i = 0; i < 15; i++) {
-    Serial.print(selected_tracks_ids[i]);
-    Serial.println(selected_tracks_titles[i]);
+  for (int i = 0; i < num_selected_tracks; i++) {                // num_selected_tracks will be set in update_selected_tracks_from_db.h
+    Serial.print(selected_tracks_ids[i]);                        // selected_tracks_ids in update_selected_tracks_from_db.h
+    Serial.println(selected_tracks_titles[i]);                   // selected_tracks_titles in update_selected_tracks_from_db.h
   }
   Serial.println("------------------------------------");
 }
@@ -98,12 +100,13 @@ void loop(){
             Serial.println("permanent audio started");
             int next_track_nr = getRandomTrackId();    
             // Serial.println(next_track_nr);
-            playTrack(next_track_nr);                            // find this function in audioplayer.h
+            playTrack(next_track_nr);                            // in audioplayer.h  |  playTrack() vs. stopTrack()
 
             String next_track_title = getRandomTrackName();
-            // Serial.printf("Next track title: %s\n", next_track_title);
+            Serial.print("Next track title: ");
+            Serial.println(next_track_title);
             audio_already_started_playing = true;  
-            write_sensordata_into_db(is_screaming);              // in helper_functions.h
+            write_sensordata_into_db(is_screaming);              // in write_sensordata_into_db.h
         }
     }
 
@@ -111,20 +114,21 @@ void loop(){
     if (is_screaming == 0 && prev_is_screaming == 1) {
         digitalWrite(BUILTIN_LED, 0);                            // turn LED off
         Serial.println("permanent audio ended");
-        stopTrack();                                             // find this function in audioplayer.h
-        write_sensordata_into_db(is_screaming);                  // in helper_functions.h
+        write_sensordata_into_db(is_screaming);                  // in write_sensordata_into_db.h
+        stopTrackAfterDelay(5000);                               // in audioplayer.h  |  stopTrack() vs. playTrack()
+        audio_already_started_playing = false; 
     }
 
     prev_is_screaming = is_screaming;
 
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("WiFi-Verbindung verloren, reconnect...");
-        rgbLedWrite(RGB_BUILTIN, 0, 10, 0);                      // rot
+        rgbLedWrite(RGB_BUILTIN, 0, 10, 0);                      // rot (GRB)
         connectWiFi();
     }
     else{  // WL_CONNECTED
         if(is_screaming == 0){
-          rgbLedWrite(RGB_BUILTIN, 0, 0, 10);                    // blau
+          rgbLedWrite(RGB_BUILTIN, 0, 0, 10);                    // blau (GRB)
         }
     }
 }
