@@ -31,9 +31,9 @@
 // int ledPin = BUILTIN_LED;
 const String SERVERURL_GET_SELECTED_TRACKS ="https://nestfunk.hausmaenner.ch/api/tracks/mc_get_selected_tracks.php";
 const String SERVERURL_WRITE_SENSORDATA ="https://nestfunk.hausmaenner.ch/api/sensordata/mc_write_sensordata.php";
-const int SERIAL_NUMBER = 1;      // Seriennummer fest eincodiert, sollte bei jedem Gerät anders sein. used in write_sensordata_into_db.h
-#define AUDIOVOLUME_THRESHOLD 80    // application triggers from this volume on (dB)
-#define TIME_UNTIL_PLAY 2500        // this is the minimum time it should be noisy bevore audio will be triggered
+const int SERIAL_NUMBER = 1;        // Seriennummer fest eincodiert, sollte bei jedem Gerät anders sein. used in write_sensordata_into_db.h
+#define AUDIOVOLUME_THRESHOLD 80    // used in loop() of mc.ino | application triggers from this volume on (dB)
+#define TIME_UNTIL_PLAY 2500        // used in loop() of mc.ino | this is the minimum time it should be noisy bevore audio will be triggered
       
 
 #include <HTTPClient.h>
@@ -50,6 +50,7 @@ const int SERIAL_NUMBER = 1;      // Seriennummer fest eincodiert, sollte bei je
 ////////////////////////////////////////////////////////////// audio trigger
 #include "get_audiovolume.h"
 #include "audioplayer.h"
+int is_screaming = 0;
 int prev_is_screaming = 0;
 unsigned long audiotrigger_startTime = 0;
 bool audio_already_started_playing = false;
@@ -83,7 +84,7 @@ void setup() {
 void loop(){
     float audiovolume = get_audiovolume();                       // audiotrigger
     int current_noise_detected = audiovolume > AUDIOVOLUME_THRESHOLD? 1:0;
-    is_screaming = isMostlyLoud(current_noise_detected);         // function in helper_functions() // 70% LOGIC: is_heulsession = 1 if the audio volume > the threshold during 70% of the last x seconds --> bridging breaks
+    is_screaming = isMostlyLoud(current_noise_detected);         // function in helper_functions() // 50% LOGIC: is_heulsession = 1 if the audio volume > the threshold during 70% of the last x seconds --> bridging breaks
 
     ////////////////////////////////////////////////////////////// 3 options of signal interpretation:
     ///// case 1: audio trigger just detected
