@@ -1,4 +1,78 @@
-# Heulradar - Babyphone Web App
+# Nestfunk - Die IoT Babyphone Applikation
+
+![Gadget](assets/Gadget.jpg)
+
+Dieses Repository umfasst eine ganzheitliche IoT-Lösung, bestehend aus einem **smarten Gadget (1)** und einer **Web-App (2)** mit Login und Authentifizierung. Das System erkennt das Weinen eines Babys, reagiert autonom mit beruhigender Musik und visualisiert die Daten für die Eltern in einem Dashboard.
+Zusätzlich können die Eltern die abzuspielende Musik auswählen.
+[Demo und Erklärung auf Youtube](https://youtu.be/Q8TB_PKfyzY)
+
+![Schema](assets/Rollenverteilung.jpg)
+
+---
+
+## 1. Smart Gadget (Physical Computing)
+
+![Static Badge](https://img.shields.io/badge/Hardware-ESP32-red)
+![Static Badge](https://img.shields.io/badge/Editor-Arduino_IDE-00979D)
+![Static Badge](https://img.shields.io/badge/Editor-VS_Code-aa00d4)
+
+Das Gadget ist das "Ohr" des Systems. Ein ESP32-Mikrocontroller analysiert Geräusche und steuert die Hardware-Komponenten.
+
+### 1.1 Architektur & Datenfluss
+
+Der Mikrocontroller fungiert als Brücke zwischen der physischen Welt und der Datenbank. Die logischen Beziehungen der Dateien und der Datenfluss zum Backend sind im zentralen Schaubild dargestellt:
+
+**Der Prozess:**
+
+1.  **Messen:** Das Mikrofon misst permanent den Schalldruckpegel.
+2.  **Trigger:** Bei Überschreitung eines Schwellenwerts startet der MP3-Player.
+3.  **Senden:** Der ESP32 sendet via HTTP-POST (an `api/load.php`) den Startzeitpunkt an das Backend.
+4.  **Abschluss:** Sobald der Pegel wieder sinkt, wird der Endzeitpunkt gesendet.
+
+### 1.2 Projektstruktur (Ordner `/mc`)
+
+Grundsätzlich hätte der gesamte Code für den ESP32(-C6) in die `mc/mc.ino` geschrieben werden können. Um den Code allerdings übersichtlich zu halten, ist die Logik in Header-Dateien (`.h`) ausgelagert. Diese enthalten thematisch abgegrenzten Code, damit die Hauptdatei (`.ino`) schlanker und logisch einfacher zu erfassen ist.
+
+| Datei                      | Rolle                                                                                                                                                                                                                                      |
+| :------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mc.ino`                   | **Main:** Das Hauptprogramm, welches Setup und Loop koordiniert. Alle langen Code-Passagen sind in die Header-Dateien (.h) ausgelagert.                                                                                                    |
+| `connectWiFi_zuhause.h`    | Herstellung der WLAN Verbindung mit einem Heimnetzwerk (mit SSID und Passwort). Wenn zB. mit einem einfachen Heimnetzwerk verbunden werden soll, wird dieses Script in das Hauptscript `mc.ino` eingebunden.                               |
+| `password_zuhause.h`       | Hier befinden sich die Zugangsdaten für ein gewöhnliches Heimnetzwerk. Diese Datei wird in `connectWiFi_zuhause.h` eingebunden. Sie ist geheim und muss in `.gitignore` aufgenommen werden                                                 |
+| `connectWiFi_hochschule.h` | Herstellung der WLAN Verbindung mit einem WPA2-Enterprise-verschlüsselten Netzwerk. Wenn zB. mit dem Hochschulnetzwerk verbunden werden soll, wird dieses Script in das Hauptscript `mc.ino` eingebunden.                                  |
+| `password_hochschule.h`    | Hier befinden sich die Zugangsdaten für das WPA2-Enterprise-verschlüsselte Netzwerk, zB. eduroam an der Hochschule. Diese Datei wird in `connectWiFi_hochschule.h` eingebunden. Sie ist geheim und muss in `.gitignore` aufgenommen werden |
+| `get_audiovolume.h`        | Schallpegel (dB) messen. Diese Datei wird in `mc.ino` eingebunden.                                                                                                                                                                         |
+| `audioplayer.h`            | Audio player functionality. Diese Datei wird in `mc.ino` eingebunden.                                                                                                                                                                      |
+
+### 1.3 Entwicklungsschritte (Step-by-Step)
+
+1.  **User Flow:** Erstellung des logischen Ablaufs ![Userflow](Userflow.jpg).
+2.  **Audio-Check:** Ansteuerung des Players über RX/TX. Songs (MP3) liegen in Ordnern `01`, `02` etc. auf der SD-Karte.
+3.  **Manuelle Steuerung:** Player-Test mit einem einfachen Taster.
+4.  **Sensor-Test:** Taster als Trigger ersetzen: Mikrofon einpegeln und Schwellenwerte für "Weinen" definieren.
+5.  **Automatisierung:** Ersatz des physischen Tasters durch den Mikrofon-Pegel als Trigger.
+6.  **Cloud-Schnittstelle:** Senden der Daten per HTTP POST an das PHP-Script.
+7.  **Gehäuse:** Design in z.B. Fusion 360 und Druck mit einem Bambulab x1c 3D-Drucker.
+
+### 1.4 Usage (Manual to Reproduce)
+
+1.  **Hardware:** Schaltung gemäss `Steckplan.png` aufbauen. ![Steckplan.png](mc/Steckplan.png)
+2.  **IDE:** `mc/mc.ino` in der Arduino IDE öffnen.
+3.  **Setup:** ESP32-Board und erforderliche Libraries auf dem Computer installieren.
+4.  **Config:** WLAN-Informationen und DB-Details in der `mc.ino` (bzw. `config.h`) anpassen.
+5.  **Upload:** Code auf den ESP32 laden.
+
+---
+
+## 2. Web-App & Backend
+
+![Static Badge](https://img.shields.io/badge/Sprache-PHP-%23f7df1e)
+![Static Badge](https://img.shields.io/badge/Kurs-MMP_IM4-blue)
+
+Die Web-App dient als Interface für die Eltern, um Statistiken einzusehen und das Gerät (z.B. die Playlist) zu konfigurieren.
+
+#### Architektur-Überblick
+
+Die App basiert auf einer strikten Trennung von Frontend (Browser) und Backend (Server):
 
 ![Static Badge](https://img.shields.io/badge/Sprache-PHP-%23f7df1e)
 ![Static Badge](https://img.shields.io/badge/Kurs-MMP_IM4-blue)
@@ -13,8 +87,6 @@ Die App dient gleichzeitig als **Lernprojekt**, um die folgenden Konzepte zu ver
 
 ---
 
-## Inhaltsverzeichnis
-
 1. [Architektur-Überblick](#1-architektur-überblick)
 2. [Warum Frontend und Backend trennen?](#2-warum-frontend-und-backend-trennen)
 3. [Authentication (Login-System) erklärt](#3-authentication-login-system-erklärt)
@@ -27,7 +99,7 @@ Die App dient gleichzeitig als **Lernprojekt**, um die folgenden Konzepte zu ver
 
 ---
 
-## 1. Architektur-Überblick
+### 2.1 Architektur-Überblick
 
 Die App besteht aus zwei klar getrennten Teilen:
 
@@ -50,7 +122,7 @@ Die App besteht aus zwei klar getrennten Teilen:
 
 ---
 
-## 2. Warum Frontend und Backend trennen?
+### Authentication (Login-System)
 
 ### Der "alte" Weg: Alles in PHP
 
@@ -130,11 +202,11 @@ Jede PHP-Datei im `api/`-Ordner setzt `header('Content-Type: application/json')`
 
 ---
 
-## 3. Authentication (Login-System) erklärt
+## 2.3. Authentication (Login-System) erklärt
 
 Authentication (kurz "Auth") beantwortet die Frage: **"Wer bist du?"** - Es stellt sicher, dass nur registrierte Benutzer auf geschützte Seiten zugreifen können.
 
-### 3.1 Die Grundidee: Sessions & Cookies
+### 2.3.1 Die Grundidee: Sessions & Cookies
 
 HTTP ist **zustandslos** (stateless) - der Server vergisst nach jedem Request, wer du bist. Damit er sich trotzdem "merken" kann, dass du eingeloggt bist, nutzen wir **Sessions**:
 
@@ -166,7 +238,7 @@ Browser                              Server
   │ ◄────────────────────────────────── │
 ```
 
-### 3.2 Registrierung (Schritt für Schritt)
+### 2.3.2 Registrierung (Schritt für Schritt)
 
 **Frontend:** `register.html` + `js/register.js`
 **Backend:** `api/auth/register.php`
@@ -230,7 +302,7 @@ Hash:     "$2y$10$Xk3c8r2jF..."  (ca. 60 Zeichen, nicht umkehrbar)
 
 Selbst wenn jemand die Datenbank hackt, kann er die Passwörter nicht lesen. Beim Login wird `password_verify()` verwendet, um zu prüfen, ob das eingegebene Passwort zum Hash passt.
 
-### 3.3 Login (Schritt für Schritt)
+### 2.3.3 Login (Schritt für Schritt)
 
 **Frontend:** `login.html` + `js/login.js`
 **Backend:** `api/auth/login.php`
@@ -274,7 +346,7 @@ if ($user && password_verify($password, $user['password'])) {
 
 Dies schützt vor **Session Fixation Attacks**. Nach dem Login bekommt der User eine neue Session-ID, damit ein Angreifer nicht eine alte, bekannte Session-ID ausnutzen kann.
 
-### 3.4 Auth-Check: Geschützte Seiten absichern
+### 2.3.4 Auth-Check: Geschützte Seiten absichern
 
 Jede geschützte Seite (index.html, settings.html, profile.html) prüft beim Laden, ob der User eingeloggt ist:
 
@@ -329,7 +401,7 @@ User öffnet index.html
                  └─► NEIN → 401 Unauthorized → JavaScript leitet zu login.html weiter
 ```
 
-### 3.5 Logout
+### 2.3.5 Logout
 
 Beim Logout wird die Session serverseitig zerstört:
 
@@ -350,7 +422,7 @@ $_SESSION = [];       // Alle Session-Daten löschen
 session_destroy();    // Session komplett zerstören
 ```
 
-### 3.6 Zusammenfassung Auth-Flow
+### 2.3.6 Zusammenfassung Auth-Flow
 
 ```
                     ┌──────────────┐
@@ -393,7 +465,7 @@ session_destroy();    // Session komplett zerstören
 
 ---
 
-## 4. Projektstruktur
+## 2.4. Projektstruktur
 
 ```
 heulradar/
@@ -462,7 +534,7 @@ Beispiele:
 
 ---
 
-## 5. Datenbank-Schema
+## 2.5. Datenbank-Schema
 
 Die App nutzt **MySQL/MariaDB** mit folgenden Tabellen:
 
@@ -515,7 +587,7 @@ Die App nutzt **MySQL/MariaDB** mit folgenden Tabellen:
 
 ---
 
-## 6. API-Referenz
+## 2.6. API-Referenz
 
 Alle Endpoints befinden sich unter `api/` und geben **JSON** zurück. Geschützte Endpoints prüfen die Session und geben `401` zurück, wenn der User nicht eingeloggt ist.
 
@@ -584,7 +656,7 @@ const response = await fetch("api/tracks/update_selected_tracks.php", {
 
 ---
 
-## 7. Frontend: Wie die Seiten funktionieren
+## 2.7. Frontend: Wie die Seiten funktionieren
 
 ### Allgemeines Pattern
 
@@ -633,20 +705,20 @@ Die Daten werden per API geladen und mit JavaScript in Chart.js-kompatible Struk
 
 ---
 
-## 8. Installation
+## 2.8. Installation
 
-### 1. Repository klonen
+### 2.8.1. Repository klonen
 
 ```bash
 git clone <repository-url>
 ```
 
-### 2. Datenbank einrichten
+## 2.8.2. Datenbank einrichten
 
 - Erstelle eine neue MySQL/MariaDB-Datenbank bei deinem Hoster (z.B. [Infomaniak](https://www.infomaniak.com/de/support/faq/1981/mysqlmariadb-benutzer-und-datenbanken-verwalten)).
 - Importiere `system/setup.sql` in die Datenbank - das erstellt alle Tabellen und fügt Standard-Tracks ein.
 
-### 3. Konfiguration
+## 2.8.3. Konfiguration
 
 - Kopiere `system/config.php.blank` und benenne die Kopie in `system/config.php` um.
 - Trage deine Datenbank-Zugangsdaten ein:
@@ -660,12 +732,12 @@ $pass = 'mein_passwort';   // DB-Passwort
 
 > `config.php` ist in `.gitignore` eingetragen und wird **nicht** ins Repository gepusht. So bleiben deine Zugangsdaten privat.
 
-### 4. Hochladen
+## 2.8.4. Hochladen
 
 - Lade alle Dateien per FTP/SFTP auf deinen Webserver hoch.
 - Erstelle eine FTP-Verbindung gemäss [Anleitung im MMP 101](https://github.com/Interaktive-Medien/101-MMP/blob/main/resources/sftp.md).
 
-### 5. Testen
+## 2.8.5. Testen
 
 - Öffne die Seite im Browser → du solltest auf `login.html` landen.
 - Erstelle einen Account über `register.html`.
@@ -673,9 +745,22 @@ $pass = 'mein_passwort';   // DB-Passwort
 
 ---
 
-## 9. Troubleshooting
+### 2.8.6. Troubleshooting
 
 - **Login funktioniert nicht nach Datei-Verschiebung:** Cache im Browser löschen oder in einem privaten Tab testen. PHP-Sessions können bei Pfadänderungen Probleme machen.
 - **Datenbank-Fehler:** Prüfe die Zugangsdaten in `system/config.php`. Nutze `system/test_connection.php` um die Verbindung zu testen.
 - **Keine Daten auf der Hauptseite:** Verbinde zuerst ein Gerät auf der Profilseite (beliebigen Code eingeben) und erstelle dann Demo-Daten über den Button auf der Hauptseite.
 - **401 Unauthorized bei API-Calls:** Stelle sicher, dass `credentials: "include"` bei fetch-Requests gesetzt ist, wenn Frontend und Backend auf verschiedenen Domains laufen.
+
+## 3. Kooperation der Komponenten
+
+Obwohl Physical Computing und Web-App unterschiedliche Aufgabenbereiche sind, arbeiten sie Hand in Hand:
+
+- Das **Gadget** fungiert als Datenquelle (Sensor) und Wiedergabegerät (Aktor).
+- Das **Backend** fungiert als Datenspeicher (Store).
+- Das **Frontend** fungiert als Visualisierung (Consumer) und User Interface.
+
+Durch die Verbindung über eine REST-ähnliche API (PHP) ist das System modular aufgebaut und jederzeit erweiterbar.
+
+Am Ende hat das IoT Gadget folgende Dateistruktur:
+![Schaubild](assets/Schaubild.jpg)
